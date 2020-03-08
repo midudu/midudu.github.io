@@ -66,9 +66,59 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-1-配置ssh登录的简单方法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/Linux/Others/1-%E9%85%8D%E7%BD%AEssh%E7%99%BB%E5%BD%95%E7%9A%84%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95/" class="article-date">
+  <time datetime="2020-03-08T02:56:06.000Z" itemprop="datePublished">2020-03-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>►<a class="article-category-link" href="/categories/Linux/Others/">Others</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/Linux/Others/1-%E9%85%8D%E7%BD%AEssh%E7%99%BB%E5%BD%95%E7%9A%84%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95/">1_配置ssh登录的简单方法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ol>
+<li><p>客户端（这里是windows系统）先到</p>
+<pre><code>C:\Users\xxx\.ssh</code></pre><p> 文件夹下找到</p>
+<pre><code>id_rsa.pub</code></pre><p> 文件，打开</p>
+</li>
+<li><p>把 id_rsa.pub 文件中的一长串字符复制，然后在已登录的服务器中输入</p>
+<pre><code>echo jlkqwjtvnlkoit &gt;&gt; /root/.ssh/authorized_keys</code></pre><p> 即可，<strong>注意要用 &gt;&gt; 追加而不是 &gt;</strong></p>
+</li>
+</ol>
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/Linux/Others/1-%E9%85%8D%E7%BD%AEssh%E7%99%BB%E5%BD%95%E7%9A%84%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95/" data-id="ck7ig7clw0001nwve7mele23p" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/03/07/hello-world/" class="article-date">
+    <a href="/uncategorized/hello-world/" class="article-date">
   <time datetime="2020-03-07T14:10:34.819Z" itemprop="datePublished">2020-03-07</time>
 </a>
     
@@ -80,7 +130,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/07/hello-world/">Hello World</a>
+      <a class="article-title" href="/uncategorized/hello-world/">Hello World</a>
     </h1>
   
 
@@ -105,7 +155,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/03/07/hello-world/" data-id="ck7iepbzf0000ekvedw4heqal" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/uncategorized/hello-world/" data-id="ck7ig7clq0000nwve4i3fcxc4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -122,6 +172,13 @@
           <aside id="sidebar">
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/Others/">Others</a></li></ul></li></ul>
+    </div>
+  </div>
+
 
   
     
@@ -146,7 +203,11 @@
       <ul>
         
           <li>
-            <a href="/2020/03/07/hello-world/">Hello World</a>
+            <a href="/Linux/Others/1-%E9%85%8D%E7%BD%AEssh%E7%99%BB%E5%BD%95%E7%9A%84%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95/">1_配置ssh登录的简单方法</a>
+          </li>
+        
+          <li>
+            <a href="/uncategorized/hello-world/">Hello World</a>
           </li>
         
       </ul>
