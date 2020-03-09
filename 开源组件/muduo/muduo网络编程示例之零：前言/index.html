@@ -1,0 +1,408 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>muduo 网络编程示例之零：前言 | Midudu&#39;s Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="原文链接 https:&#x2F;&#x2F;blog.csdn.net&#x2F;Solstice&#x2F;article&#x2F;details&#x2F;6171831  我将会写一系列文章，介绍用 muduo 网络库完成常见的 TCP 网络编程任务。目前计划如下：  UNP 中的简单协议，包括 echo、daytime、time、discard 等。  Boost.Asio 中的示例，包括 timer2~6、chat 等。 Java Nett">
+<meta property="og:type" content="article">
+<meta property="og:title" content="muduo 网络编程示例之零：前言">
+<meta property="og:url" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%A4%BA%E4%BE%8B%E4%B9%8B%E9%9B%B6%EF%BC%9A%E5%89%8D%E8%A8%80/index.html">
+<meta property="og:site_name" content="Midudu&#39;s Home">
+<meta property="og:description" content="原文链接 https:&#x2F;&#x2F;blog.csdn.net&#x2F;Solstice&#x2F;article&#x2F;details&#x2F;6171831  我将会写一系列文章，介绍用 muduo 网络库完成常见的 TCP 网络编程任务。目前计划如下：  UNP 中的简单协议，包括 echo、daytime、time、discard 等。  Boost.Asio 中的示例，包括 timer2~6、chat 等。 Java Nett">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-09T02:55:49.386Z">
+<meta property="article:modified_time" content="2020-03-09T02:56:26.000Z">
+<meta property="article:author" content="Midudu">
+<meta property="article:tag" content="Cpp">
+<meta property="article:tag" content="Net">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Midudu&#39;s Home" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Midudu&#39;s Home</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="yoursite.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-muduo网络编程示例之零：前言" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%A4%BA%E4%BE%8B%E4%B9%8B%E9%9B%B6%EF%BC%9A%E5%89%8D%E8%A8%80/" class="article-date">
+  <time datetime="2020-03-09T02:55:49.386Z" itemprop="datePublished">2020-03-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a>►<a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/">muduo</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      muduo 网络编程示例之零：前言
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>原文链接 <a href="https://blog.csdn.net/Solstice/article/details/6171831" target="_blank" rel="noopener">https://blog.csdn.net/Solstice/article/details/6171831</a></p>
+</blockquote>
+<p>我将会写一系列文章，介绍用 muduo 网络库完成常见的 TCP 网络编程任务。目前计划如下：</p>
+<ol>
+<li>UNP 中的简单协议，包括 echo、daytime、time、discard 等。 </li>
+<li>Boost.Asio 中的示例，包括 timer2~6、chat 等。</li>
+<li>Java Netty 中的示例，包括 discard、echo、uptime 等，其中的 discard 和 echo 带流量统计功能。</li>
+<li>Python twisted 中的示例，包括 finger01~07</li>
+<li>用于测试两台机器的往返延迟的 roundtrip</li>
+<li>用于测试两台机器的带宽的 pingpong</li>
+<li>云风的串并转换连接服务器 multiplexer，包括单线程和多线程两个版本。</li>
+<li>文件传输</li>
+<li>一个基于 TCP 的应用层广播 hub</li>
+<li>socks4a 代理服务器，包括简单的 TCP 中继(relay)。</li>
+<li>一个 Sudoku 服务器的演变，从单线程到多线程，从阻塞到 event-based。</li>
+<li>一个提供短址服务的 httpd 服务器</li>
+</ol>
+<p>其中前面 7 个已经放到了 muduo 代码的 examples 目录中，下载地址是： <a href="http://muduo.googlecode.com/files/muduo-0.1.5-alpha.tar.gz" target="_blank" rel="noopener">http://muduo.googlecode.com/files/muduo-0.1.5-alpha.tar.gz</a> </p>
+<p>这些例子都比较简单，逻辑不复杂，代码也很短，适合摘取关键部分放到博客上。其中一些有一定的代表性与针对性，比如“如何传输完整的文件”估计是网络编程的初学者经常遇到的问题。请注意，<strong>muduo 是设计来开发内网的网络程序，它没有做任何安全方面的加强措施，如果用在公网上可能会受到攻击</strong>，在后面的例子中我会谈到这一点。</p>
+<p>本系列文章适用于 <code>Linux 2.6.x (x &gt; 28)</code>，主要测试发行版为 <code>Ubuntu 10.04 LTS</code> 和 <code>Debian 6.0 Squeeze，64-bit x86</code> 硬件。</p>
+<ul>
+<li><a href="#1-tcp-%e7%bd%91%e7%bb%9c%e7%bc%96%e7%a8%8b%e6%9c%ac%e8%b4%a8%e8%ae%ba">1. TCP 网络编程本质论</a></li>
+<li><a href="#2-muduo-%e7%ae%80%e4%bb%8b">2. Muduo 简介</a></li>
+</ul>
+<h2 id="1-TCP-网络编程本质论"><a href="#1-TCP-网络编程本质论" class="headerlink" title="1. TCP 网络编程本质论"></a>1. TCP 网络编程本质论</h2><p>我认为，TCP 网络编程最本质的是处理<strong>三个半事件</strong>：</p>
+<ol>
+<li><p><strong>连接的建立</strong>，包括服务端接受 (accept) 新连接和客户端成功发起 (connect) 连接。</p>
+</li>
+<li><p><strong>连接的断开</strong>，包括主动断开 (close 或 shutdown) 和被动断开 (read 返回 0)。</p>
+</li>
+<li><p><strong>消息到达，文件描述符可读</strong>。这是最为重要的一个事件，对它的处理方式决定了网络编程的风格（阻塞还是非阻塞，如何处理分包，应用层的缓冲如何设计等等）。</p>
+</li>
+<li><p><strong>消息发送完毕</strong>，这算半个。对于低流量的服务，可以不必关心这个事件；另外，<strong>这里“发送完毕”是指将数据写入操作系统的缓冲区，将由 TCP 协议栈负责数据的发送与重传</strong>，不代表对方已经收到数据。</p>
+</li>
+</ol>
+<p>这其中有很多难点，也有很多细节需要注意，比方说：</p>
+<ol>
+<li><p><strong>如果要主动关闭连接，如何保证对方已经收到全部数据</strong>？如果应用层有缓冲（这在非阻塞网络编程中是必须的，见下文），那么如何保证先发送完缓冲区中的数据，然后再断开连接。直接调用 close(2) 恐怕是不行的。</p>
+</li>
+<li><p>如果主动发起连接，但是对方主动拒绝，<strong>如何定期 (带 back-off) 重试</strong>？</p>
+</li>
+<li><p><strong>非阻塞网络编程该用边沿触发(edge trigger)还是电平触发(level trigger)</strong>？（这两个中文术语有其他译法，我选择了一个电子工程师熟悉的说法。）如果是电平触发，那么什么时候关注 EPOLLOUT 事件？会不会造成 busy-loop？如果是边沿触发，如何防止漏读造成的饥饿？epoll 一定比 poll 快吗？</p>
+</li>
+<li><p>在非阻塞网络编程中，为什么要使用应用层缓冲区？假如一次读到的数据不够一个完整的数据包，那么这些已经读到的数据是不是应该先暂存在某个地方，等剩余的数据收到之后再一并处理？见 lighttpd 关于 /r/n/r/n 分包的 bug。假如数据是一个字节一个字节地到达，间隔 10ms，每个字节触发一次文件描述符可读 (readable) 事件，程序是否还能正常工作？lighttpd 在这个问题上出过安全漏洞。</p>
+</li>
+<li><p>在非阻塞网络编程中，如何设计并使用缓冲区？一方面我们希望减少系统调用，一次读的数据越多越划算，那么似乎应该准备一个大的缓冲区。另一方面，我们系统减少内存占用。如果有 10k 个连接，每个连接一建立就分配 64k 的读缓冲的话，将占用 640M 内存，而大多数时候这些缓冲区的使用率很低。muduo 用 readv 结合栈上空间巧妙地解决了这个问题。</p>
+</li>
+<li><p>如果使用发送缓冲区，万一接收方处理缓慢，数据会不会一直堆积在发送方，造成内存暴涨？如何做应用层的流量控制？</p>
+</li>
+<li><p><strong>如何设计并实现定时器</strong>？并使之与网络 IO 共用一个线程，以避免锁。</p>
+</li>
+</ol>
+<p>这些问题在 muduo 的代码中可以找到答案。</p>
+<h2 id="2-Muduo-简介"><a href="#2-Muduo-简介" class="headerlink" title="2. Muduo 简介"></a>2. Muduo 简介</h2><p>我编写 Muduo 网络库的目的之一就是简化日常的 TCP 网络编程，让程序员能把精力集中在业务逻辑的实现上，而不要天天和 Sockets API 较劲。借用 Brooks 的话说，我希望 Muduo 能减少网络编程中的偶发复杂性 (accidental complexity)。</p>
+<p>Muduo 只支持 Linux 2.6.x 下的并发非阻塞 TCP 网络编程，它的安装方法见陈硕的 blog 文章。</p>
+<p><strong>Muduo 的使用非常简单，不需要从指定的类派生，也不用覆写虚函数，只需要注册几个回调函数去处理前面提到的三个半事件就行了。</strong></p>
+<p>以经典的 echo 回显服务为例：</p>
+<ol>
+<li>定义 <code>EchoServer class</code>，不需要派生自任何基类：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> MUDUO_EXAMPLES_SIMPLE_ECHO_ECHO_H </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MUDUO_EXAMPLES_SIMPLE_ECHO_ECHO_H</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// RFC 862 </span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EchoServer</span> &#123;</span> </span><br><span class="line"><span class="keyword">public</span>: </span><br><span class="line">  EchoServer(muduo::net::EventLoop* loop, </span><br><span class="line">             <span class="keyword">const</span> muduo::net::InetAddress&amp; listenAddr);</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">start</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">private</span>: </span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">onConnection</span><span class="params">(<span class="keyword">const</span> muduo::net::TcpConnectionPtr&amp; conn)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(<span class="keyword">const</span> muduo::net::TcpConnectionPtr&amp; conn, </span></span></span><br><span class="line"><span class="function"><span class="params">                 muduo::net::Buffer* buf, </span></span></span><br><span class="line"><span class="function"><span class="params">                 muduo::Timestamp time)</span></span>;</span><br><span class="line"></span><br><span class="line">  muduo::net::EventLoop* loop_; </span><br><span class="line">  muduo::net::TcpServer server_; </span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span>  <span class="comment">// MUDUO_EXAMPLES_SIMPLE_ECHO_ECHO_H</span></span></span><br></pre></td></tr></table></figure>
+
+<p>在构造函数里注册回调函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">EchoServer::EchoServer(EventLoop* loop, </span><br><span class="line">                       <span class="keyword">const</span> InetAddress&amp; listenAddr) </span><br><span class="line">  : loop_(loop), </span><br><span class="line">    server_(loop, listenAddr, <span class="string">"EchoServer"</span>) &#123; </span><br><span class="line"></span><br><span class="line">    server_.setConnectionCallback(</span><br><span class="line">        boost::bind(&amp;EchoServer::onConnection, <span class="keyword">this</span>, _1)); </span><br><span class="line"></span><br><span class="line">    server_.setMessageCallback( </span><br><span class="line">        boost::bind(&amp;EchoServer::onMessage, <span class="keyword">this</span>, _1, _2, _3)); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EchoServer::start</span><span class="params">()</span> </span>&#123; </span><br><span class="line">    server_.start(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>实现 EchoServer::onConnection() 和 EchoServer::onMessage()：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EchoServer::onConnection</span><span class="params">(<span class="keyword">const</span> TcpConnectionPtr&amp; conn)</span> </span>&#123; </span><br><span class="line">    </span><br><span class="line">    LOG_INFO &lt;&lt; <span class="string">"EchoServer - "</span> &lt;&lt; conn-&gt;peerAddress().toHostPort() &lt;&lt; <span class="string">" -&gt; "</span> </span><br><span class="line">    &lt;&lt; conn-&gt;localAddress().toHostPort() &lt;&lt; <span class="string">" is "</span> </span><br><span class="line">    &lt;&lt; (conn-&gt;connected() ? <span class="string">"UP"</span> : <span class="string">"DOWN"</span>); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EchoServer::onMessage</span><span class="params">(<span class="keyword">const</span> TcpConnectionPtr&amp; conn, </span></span></span><br><span class="line"><span class="function"><span class="params">                           Buffer* buf, </span></span></span><br><span class="line"><span class="function"><span class="params">                           Timestamp time)</span> </span>&#123; </span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="built_in">string</span> <span class="title">msg</span><span class="params">(buf-&gt;retrieveAsString())</span></span>; </span><br><span class="line">  LOG_INFO &lt;&lt; conn-&gt;name() &lt;&lt; <span class="string">" echo "</span> &lt;&lt; msg.size() &lt;&lt; <span class="string">" bytes at "</span> &lt;&lt; time.toString(); </span><br><span class="line"></span><br><span class="line">  conn-&gt;send(msg); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>在 main() 里用 EventLoop 让整个程序跑起来：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"echo.h"</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> muduo; </span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> muduo::net;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123; </span><br><span class="line">  LOG_INFO &lt;&lt; <span class="string">"pid = "</span> &lt;&lt; getpid(); </span><br><span class="line">  EventLoop loop; </span><br><span class="line">  <span class="function">InetAddress <span class="title">listenAddr</span><span class="params">(<span class="number">2007</span>)</span></span>; </span><br><span class="line">  <span class="function">EchoServer <span class="title">server</span><span class="params">(&amp;loop, listenAddr)</span></span>; </span><br><span class="line">  server.start(); </span><br><span class="line">  loop.loop(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完整的代码见 muduo/examples/simple/echo。</p>
+<p>这个几十行的小程序实现了一个并发的 echo 服务程序，可以同时处理多个连接。</p>
+<p>对这个程序的详细分析见下一篇博客《Muduo 网络编程示例之一：五个简单 TCP 协议》<br>————————————————<br>版权声明：本文为CSDN博主「陈硕」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。<br>原文链接：<a href="https://blog.csdn.net/Solstice/article/details/6171831" target="_blank" rel="noopener">https://blog.csdn.net/Solstice/article/details/6171831</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%A4%BA%E4%BE%8B%E4%B9%8B%E9%9B%B6%EF%BC%9A%E5%89%8D%E8%A8%80/" data-id="ck7jvsf1l000ltgvea4gig2tp" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%A4%BA%E4%BE%8B%E4%B9%8B%E9%9B%B6%EF%BC%9A%E5%89%8D%E8%A8%80/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/" rel="tag">Cpp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Net/" rel="tag">Net</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E4%B8%AD%E7%9A%84net%E7%BB%84%E4%BB%B6/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          muduo 中的 net 组件
+        
+      </div>
+    </a>
+  
+  
+    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/%E4%BB%A5boost%E4%B8%AD%E7%9A%84function%E5%92%8Cbind%E5%8F%96%E4%BB%A3%E8%99%9A%E5%87%BD%E6%95%B0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">以 boost 中的 function 和 bind 取代虚函数</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="开源组件/muduo/muduo网络编程示例之零：前言/" data-title="muduo 网络编程示例之零：前言" data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%A4%BA%E4%BE%8B%E4%B9%8B%E9%9B%B6%EF%BC%9A%E5%89%8D%E8%A8%80/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/">muduo</a><span class="category-list-count">12</span></li></ul></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/" rel="tag">Cpp</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/" rel="tag">IO</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Net/" rel="tag">Net</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TCP/" rel="tag">TCP</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 13.33px;">Boost</a> <a href="/tags/CMake/" style="font-size: 10px;">CMake</a> <a href="/tags/Cpp/" style="font-size: 20px;">Cpp</a> <a href="/tags/IO/" style="font-size: 13.33px;">IO</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Net/" style="font-size: 16.67px;">Net</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/TCP/" style="font-size: 13.33px;">TCP</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a><span class="archive-list-count">12</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B%EF%BC%9A%E4%B8%80%E4%B8%AASudoku%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%BC%94%E5%8F%98/">muduo 多线程模型：一个 Sudoku 服务器演变</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%A4%BA%E4%BE%8B%E4%B9%8B%E4%BA%8C%EF%BC%9ABoost.Asio%E7%9A%84%E8%81%8A%E5%A4%A9%E6%9C%8D%E5%8A%A1%E5%99%A8/">muduo 网络编程示例之二： Boost.Asio 的聊天服务器</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/%E4%B8%BA%E4%BB%80%E4%B9%88muduo%E7%9A%84shutdown()%E6%B2%A1%E6%9C%89%E7%9B%B4%E6%8E%A5%E5%85%B3%E9%97%ADTCP%E8%BF%9E%E6%8E%A5%EF%BC%9F/">为什么 muduo 的 shutdown() 没有直接关闭 TCP 连接？</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%A4%BA%E4%BE%8B%E4%B9%8B%E4%B8%80%EF%BC%9A%E4%BA%94%E4%B8%AA%E7%AE%80%E5%8D%95TCP%E5%8D%8F%E8%AE%AE/">muduo 网络编程示例之一：五个简单 TCP 协议</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E4%B8%AD%E7%9A%84net%E7%BB%84%E4%BB%B6/">muduo 中的 net 组件</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/midudu" target="_blank">GitHub</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Midudu<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"midudu"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+<script src="/js/script.js"></script>
+
+
+</div>
+</body>
+</html>
