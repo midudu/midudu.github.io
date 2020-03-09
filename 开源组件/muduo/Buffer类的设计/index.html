@@ -13,33 +13,33 @@
 <meta property="og:site_name" content="Midudu&#39;s Home">
 <meta property="og:description" content="原文链接：https:&#x2F;&#x2F;blog.csdn.net&#x2F;Solstice&#x2F;article&#x2F;details&#x2F;6329080   1.Muduo 的 IO 模型 2.为什么 non-blocking 网络编程中应用层 buffer 是必须的？ TcpConnection 必须要有 output buffer TcpConnection 必须要有 input buffer   3. Buffer 的要求">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/muduo_buffer.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/muduo_buffer.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/write_data_to_buffer.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/read_data_from_buffer.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_1303014375Esqf.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/empty_buffer.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_1303014376eDV2.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/auto_append.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_1303014376H0VH.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_13030143778RY9.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_13030143775oe2.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_1303014377y2YN.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_1303014378Azb6.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_1303014378rn6e.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/internal_move.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_1303014379m3MC.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_1303014380uIzd.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_1303014380qA8E.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/0_1303014380Np9H.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/nonvector_buffer.gif">
-<meta property="og:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/zero_copy.gif">
+<meta property="og:image" content="http://yoursite.com/resources/muduo_buffer.gif">
+<meta property="og:image" content="http://yoursite.com/resources/muduo_buffer.gif">
+<meta property="og:image" content="http://yoursite.com/resources/write_data_to_buffer.gif">
+<meta property="og:image" content="http://yoursite.com/resources/read_data_from_buffer.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_1303014375Esqf.gif">
+<meta property="og:image" content="http://yoursite.com/resources/empty_buffer.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_1303014376eDV2.gif">
+<meta property="og:image" content="http://yoursite.com/resources/auto_append.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_1303014376H0VH.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_13030143778RY9.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_13030143775oe2.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_1303014377y2YN.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_1303014378Azb6.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_1303014378rn6e.gif">
+<meta property="og:image" content="http://yoursite.com/resources/internal_move.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_1303014379m3MC.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_1303014380uIzd.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_1303014380qA8E.gif">
+<meta property="og:image" content="http://yoursite.com/resources/0_1303014380Np9H.gif">
+<meta property="og:image" content="http://yoursite.com/resources/nonvector_buffer.gif">
+<meta property="og:image" content="http://yoursite.com/resources/zero_copy.gif">
 <meta property="article:published_time" content="2020-03-09T02:49:12.510Z">
 <meta property="article:modified_time" content="2020-03-09T02:49:47.000Z">
 <meta property="article:author" content="Midudu">
 <meta property="article:tag" content="Cpp">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/resources/muduo_buffer.gif">
+<meta name="twitter:image" content="http://yoursite.com/resources/muduo_buffer.gif">
   
     <link rel="alternative" href="/atom.xml" title="Midudu&#39;s Home" type="application/atom+xml">
   
@@ -226,7 +226,7 @@
 <h2 id="4-Muduo-Buffer-的数据结构"><a href="#4-Muduo-Buffer-的数据结构" class="headerlink" title="4. Muduo Buffer 的数据结构"></a>4. Muduo Buffer 的数据结构</h2><p>Buffer 的内部是一个 <code>vector of char</code>，它是一块连续的内存。此外，Buffer 有两个 data members (readerIndex_ 和 writerIndex_)，指向该 vector 中的元素。这两个 indices 的类型是 int，不是 char<em>，目的是应对迭代器失效。muduo Buffer 的设计参考了 Netty 的 ChannelBuffer 和 libevent 1.4.x 的 evbuffer。*</em>不过，其 prependable 可算是一点“微创新”**。</p>
 <p>Muduo Buffer 的数据结构如下：</p>
 <p>图 1</p>
-<p><img src="./resources/muduo_buffer.gif" alt="Muduo Buffer"></p>
+<p><img src="/resources/muduo_buffer.gif" alt="Muduo Buffer"></p>
 <p>两个 indices 把 vector 的内容分为三块：<code>prependable</code>、<code>readable</code>、<code>writable</code>，各块的大小是（公式一）：</p>
 <ul>
 <li><p><code>prependable = readIndex</code></p>
@@ -261,76 +261,76 @@
 <p><code>0 ≤ readIndex ≤ writeIndex ≤ data.size()</code></p>
 <p>Muduo Buffer 里有两个常数 kCheapPrepend 和 kInitialSize，定义了 prependable 的初始大小和 writable 的初始大小。（readable 的初始大小为 0。）在初始化之后，Buffer 的数据结构如下：括号里的数字是该变量或常量的值。</p>
 <p>图 2</p>
-<p><img src="./resources/muduo_buffer.gif" alt="Buffer初始化以后的结构"></p>
+<p><img src="/resources/muduo_buffer.gif" alt="Buffer初始化以后的结构"></p>
 <p>根据以上（公式一）可算出各块的大小，刚刚初始化的 Buffer 里没有 payload 数据，所以 readable == 0。</p>
 <h2 id="5-Muduo-Buffer-的操作"><a href="#5-Muduo-Buffer-的操作" class="headerlink" title="5. Muduo Buffer 的操作"></a>5. Muduo Buffer 的操作</h2><h3 id="基本的-read-write-cycle"><a href="#基本的-read-write-cycle" class="headerlink" title="基本的 read-write cycle"></a>基本的 read-write cycle</h3><p>Buffer 初始化后的情况见图 1，如果有人向 Buffer 写入了 200 字节，那么其布局是：</p>
 <p>图 3</p>
-<p><img src="./resources/write_data_to_buffer.gif" alt="向Buffer写入200字节"></p>
+<p><img src="/resources/write_data_to_buffer.gif" alt="向Buffer写入200字节"></p>
 <p>图 3 中 writeIndex 向后移动了 200 字节，readIndex 保持不变，readable 和 writable 的值也有变化。</p>
 <p>如果有人从 Buffer read() &amp; retrieve() （下称“读入”）了 50 字节，结果见图 4。与上图相比，readIndex 向后移动 50 字节，writeIndex 保持不变，readable 和 writable 的值也有变化（这句话往后从略）。</p>
 <p>图 4</p>
-<p><img src="./resources/read_data_from_buffer.gif" alt="从Buffer读字节"></p>
+<p><img src="/resources/read_data_from_buffer.gif" alt="从Buffer读字节"></p>
 <p>然后又写入了 200 字节，writeIndex 向后移动了 200 字节，readIndex 保持不变，见图 5。</p>
 <p>图 5</p>
-<p><img src="./resources/0_1303014375Esqf.gif" alt="图5"></p>
+<p><img src="/resources/0_1303014375Esqf.gif" alt="图5"></p>
 <p>接下来，一次性读入 350 字节，请注意，由于全部数据读完了，readIndex 和 writeIndex 返回原位以备新一轮使用，见图 6，<strong>这和图 2 是一样的</strong>。</p>
 <p>图 6</p>
-<p><img src="./resources/empty_buffer.gif" alt="读取全部数据后的空buffer"></p>
+<p><img src="/resources/empty_buffer.gif" alt="读取全部数据后的空buffer"></p>
 <p>以上过程可以看作是发送方发送了两条消息，长度分别为 50 字节和 350 字节，接收方分两次收到数据，每次 200 字节，然后进行分包，再分两次回调客户代码。</p>
 <h3 id="自动增长"><a href="#自动增长" class="headerlink" title="自动增长"></a>自动增长</h3><p>Muduo Buffer <strong>不是固定长度的</strong>，它可以<strong>自动增长</strong>，这是使用 vector 的直接好处。</p>
 <p>假设当前的状态如图 7 所示。（这和前面图 5 是一样的。）</p>
 <p>图 7</p>
-<p><img src="./resources/0_1303014376eDV2.gif" alt="图7"></p>
+<p><img src="/resources/0_1303014376eDV2.gif" alt="图7"></p>
 <p>客户代码一次性写入 1000 字节，而当前可写的字节数只有 624，那么 buffer <strong>会自动增长以容纳全部数据</strong>，得到的结果是图 8。注意 readIndex 返回到了前面，以保持 prependable 等于 kCheapPrependable。<strong>由于 vector 重新分配了内存，原来指向它元素的指针会失效，这就是为什么 readIndex 和 writeIndex 是整数下标而不是指针</strong>。</p>
 <p>代码如下：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">makeSpace</span><span class="params">(<span class="keyword">size_t</span> len)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (writableBytes() + prependableBytes() &lt; len + kCheapPrepend) &#123;</span><br><span class="line">        <span class="comment">// <span class="doctag">FIXME:</span> move readable data</span></span><br><span class="line">        buffer_.resize(writerIndex_ + len);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// move readable data to the front, make space inside buffer</span></span><br><span class="line">        assert(kCheapPrepend &lt; readerIndex_);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">size_t</span> readable = readableBytes();</span><br><span class="line">        <span class="built_in">std</span>::copy(begin() + readerIndex_, </span><br><span class="line">        begin() + writerIndex_, begin() + kCheapPrepend);</span><br><span class="line"></span><br><span class="line">        readerIndex_ = kCheapPrepend;</span><br><span class="line">        writerIndex_ = readerIndex_ + readable;</span><br><span class="line"></span><br><span class="line">        assert(readable == readableBytes());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>图 8</p>
-<p><img src="./resources/auto_append.gif" alt="自动扩容"></p>
+<p><img src="/resources/auto_append.gif" alt="自动扩容"></p>
 <p>然后读入 350 字节，readIndex 前移，见图 9。</p>
 <p>图 9</p>
-<p><img src="./resources/0_1303014376H0VH.gif" alt="图9"></p>
+<p><img src="/resources/0_1303014376H0VH.gif" alt="图9"></p>
 <p>最后，读完剩下的 1000 字节，readIndex 和 writeIndex 返回 kCheapPrependable，见图 10。</p>
 <p>图 10</p>
-<p><img src="./resources/0_13030143778RY9.gif" alt="图10"></p>
+<p><img src="/resources/0_13030143778RY9.gif" alt="图10"></p>
 <p><strong>注意 buffer 并没有缩小大小</strong>，下次写入 1350 字节就不会重新分配内存了。换句话说，<strong>Muduo Buffer 的 size() 是自适应的</strong>，它一开始的初始值是 1k，如果程序里边经常收发 10k 的数据，那么用几次之后它的 size() 会自动增长到 10k，然后就保持不变。这样一方面避免浪费内存（有的程序可能只需要 4k 的缓冲），另一方面避免反复分配内存。当然，<strong>客户代码可以手动 shrink() buffer size()</strong>。</p>
 <h3 id="size-与-capacity"><a href="#size-与-capacity" class="headerlink" title="size() 与 capacity()"></a>size() 与 capacity()</h3><p>使用 vector 的另一个好处是<strong>它的 capcity() 机制减少了内存分配的次数</strong>。比方说程序反复写入 1 字节，muduo Buffer 不会每次都分配内存，vector 的 capacity() 以指数方式增长，让 push_back() 的平均复杂度是常数。比方说经过第一次增长，size() 刚好满足写入的需求，如图 11。但这个时候 vector 的 capacity() 已经大于 size()，在接下来写入 capacity()-size() 字节的数据时，都不会重新分配内存，见图 12。</p>
 <p>图 11</p>
-<p><img src="./resources/0_13030143775oe2.gif" alt="图11"></p>
+<p><img src="/resources/0_13030143775oe2.gif" alt="图11"></p>
 <p>图 12</p>
-<p><img src="./resources/0_1303014377y2YN.gif" alt="图12"></p>
+<p><img src="/resources/0_1303014377y2YN.gif" alt="图12"></p>
 <p>细心的读者可能会发现用 capacity() 也不是完美的，它有优化的余地。具体来说，<em>vector::resize() 会初始化(memset/bzero)内存，而我们不需要它初始化，因为反正立刻就要填入数据</em>。比如，在图 12 的基础上写入 200 字节，由于 capacity() 足够大，不会重新分配内存，这是好事；但是 vector::resize() 会先把那 200 字节设为 0 （图 13），然后 muduo buffer 再填入数据（图 14）。这么做稍微有点浪费，不过我不打算优化它，除非它确实造成了性能瓶颈。（精通 STL 的读者可能会说用 vector::append() 以避免浪费，但是 writeIndex 和 size() 不一定是对齐的，会有别的麻烦。）</p>
 <p>图 13</p>
-<p><img src="./resources/0_1303014378Azb6.gif" alt="图13"></p>
+<p><img src="/resources/0_1303014378Azb6.gif" alt="图13"></p>
 <p>图 14</p>
-<p><img src="./resources/0_1303014378rn6e.gif" alt="图14"></p>
+<p><img src="/resources/0_1303014378rn6e.gif" alt="图14"></p>
 <p>google protobuf 中有一个 STLStringResizeUninitialized 函数，干的就是这个事情。</p>
 <h3 id="内部腾挪"><a href="#内部腾挪" class="headerlink" title="内部腾挪"></a>内部腾挪</h3><p>有时候，经过若干次读写，readIndex 移到了比较靠后的位置，留下了巨大的 prependable 空间，见图 14。</p>
 <p>图 14</p>
-<p><img src="./resources/internal_move.gif" alt="内部腾挪"></p>
+<p><img src="/resources/internal_move.gif" alt="内部腾挪"></p>
 <p>这时候，如果我们想写入 300 字节，而 writable 只有 200 字节，怎么办？muduo Buffer 在这种情况下不会重新分配内存，而是先把已有的数据移到前面去，腾出 writable 空间，见图 15。</p>
 <p>图 15</p>
-<p><img src="./resources/0_1303014379m3MC.gif" alt="图15"></p>
+<p><img src="/resources/0_1303014379m3MC.gif" alt="图15"></p>
 <p>然后，就可以写入 300 字节了，见图 16。</p>
 <p>图 16</p>
-<p><img src="./resources/0_1303014380uIzd.gif" alt="图16"></p>
+<p><img src="/resources/0_1303014380uIzd.gif" alt="图16"></p>
 <p>这么做的原因是，如果重新分配内存，反正也是要把数据拷到新分配的内存区域，代价只会更大。</p>
 <h3 id="prepend"><a href="#prepend" class="headerlink" title="prepend"></a>prepend</h3><p>前面说 muduo Buffer 有个小小的创新（或许不是创新，我记得在哪儿看到过类似的做法，忘了出处），即提供 prependable 空间，<strong>让程序能以很低的代价在数据前面添加几个字节</strong>。</p>
 <p>比方说，程序以固定的4个字节表示消息的长度（即《Muduo 网络编程示例之二：Boost.Asio 的聊天服务器》中的 LengthHeaderCodec），<strong>我要序列化一个消息，但是不知道它有多长</strong>，那么我可以一直 append() 直到序列化完成（图 17，写入了 200 字节），<strong>然后再在序列化数据的前面添加消息的长度</strong>（图 18，把 200 这个数 prepend 到首部）。</p>
 <p>图 17</p>
-<p><img src="./resources/0_1303014380qA8E.gif" alt="图17"></p>
+<p><img src="/resources/0_1303014380qA8E.gif" alt="图17"></p>
 <p>图 18</p>
-<p><img src="./resources/0_1303014380Np9H.gif" alt="图18"></p>
+<p><img src="/resources/0_1303014380Np9H.gif" alt="图18"></p>
 <p><strong>通过预留 kCheapPrependable 空间，可以简化客户代码，一个简单的空间换时间思路</strong>。</p>
 <h2 id="6-其他设计方案"><a href="#6-其他设计方案" class="headerlink" title="6. 其他设计方案"></a>6. 其他设计方案</h2><p>这里简单谈谈其他可能的应用层 buffer 设计方案。</p>
 <h3 id="不用-vector？"><a href="#不用-vector？" class="headerlink" title="不用 vector？"></a>不用 vector？</h3><p>如果有 STL 洁癖，那么可以自己管理内存，以 4 个指针为 buffer 的成员，数据结构见图 19。</p>
 <p>图 19</p>
-<p><img src="./resources/nonvector_buffer.gif" alt="非vector的buffer"></p>
+<p><img src="/resources/nonvector_buffer.gif" alt="非vector的buffer"></p>
 <p>说实话我不觉得这种方案比 vector 好。代码变复杂，性能也未见得有 noticeable 的改观。</p>
 <p>如果放弃“连续性”要求，可以用 circular buffer，这样可以减少一点内存拷贝（没有“内部腾挪”）。</p>
 <h3 id="Zero-copy"><a href="#Zero-copy" class="headerlink" title="Zero copy ?"></a>Zero copy ?</h3><p>如果对性能有极高的要求，受不了 copy() 与 resize()，那么可以考虑实现分段连续的 zero copy buffer 再配合 gather scatter IO，数据结构如图 20，这是 libevent 2.0.x 的设计方案。TCPv2介绍的 BSD TCP/IP 实现中的 mbuf 也是类似的方案，Linux 的 sk_buff 估计也差不多。细节有出入，但<strong>基本思路都是不要求数据在内存中连续，而是用链表把数据块链接到一起</strong>。</p>
 <p>图 20</p>
-<p><img src="./resources/zero_copy.gif" alt="zero copy"></p>
+<p><img src="/resources/zero_copy.gif" alt="zero copy"></p>
 <p>当然，<strong>高性能的代价是代码变得晦涩难读</strong>，buffer 不再是连续的，parse 消息会稍微麻烦。如果你的程序只处理 protobuf Message，这不是问题，因为 protobuf 有 ZeroCopyInputStream 接口，只要实现这个接口，parsing 的事情就交给 protobuf Message 去操心了。</p>
 <h2 id="7-性能是不是问题？看跟谁比"><a href="#7-性能是不是问题？看跟谁比" class="headerlink" title="7. 性能是不是问题？看跟谁比"></a>7. 性能是不是问题？看跟谁比</h2><p>看到这里，有的读者可能会嘀咕，muduo Buffer 有那么多可以优化的地方，其性能会不会太低？对此，我的回应是“可以优化，不一定值得优化。”</p>
 <p><strong>Muduo 的设计目标是用于开发公司内部的分布式程序</strong>。换句话说，它是用来写专用的 Sudoku server 或者游戏服务器，不是用来写通用的 httpd 或 ftpd 或 www proxy。前者通常有业务逻辑，后者更强调高并发与高吞吐。</p>
@@ -345,7 +345,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/" data-id="ck7jvsf0r0000tgveeedv61ux" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/" data-id="ck7jw5i220001y4vebc6thyyb" class="article-share-link">分享到</a>
       
 
       
