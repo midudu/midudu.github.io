@@ -1,0 +1,380 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Redis 源码阅读7_数据库实现相关_db | Midudu&#39;s Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Redis 的数据库实现。  涉及文件 结构体 API robj *lookupKeyReadOrReply(redisClient *c, robj *key, robj *reply) robj *lookupKeyWriteOrReply(redisClient *c, robj *key, robj *reply) void delCommand(redisClient *c)    涉及">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis 源码阅读7_数据库实现相关_db">
+<meta property="og:url" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB7_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_db/index.html">
+<meta property="og:site_name" content="Midudu&#39;s Home">
+<meta property="og:description" content="Redis 的数据库实现。  涉及文件 结构体 API robj *lookupKeyReadOrReply(redisClient *c, robj *key, robj *reply) robj *lookupKeyWriteOrReply(redisClient *c, robj *key, robj *reply) void delCommand(redisClient *c)    涉及">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-11T12:21:42.905Z">
+<meta property="article:modified_time" content="2020-03-11T12:22:47.000Z">
+<meta property="article:author" content="Midudu">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Midudu&#39;s Home" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Midudu&#39;s Home</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="yoursite.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-Redis源码阅读7_数据库实现相关_db" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB7_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_db/" class="article-date">
+  <time datetime="2020-03-11T12:21:42.905Z" itemprop="datePublished">2020-03-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a>►<a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/">Redis</a>►<a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Redis 源码阅读7_数据库实现相关_db
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Redis 的数据库实现。</p>
+<ul>
+<li><a href="#%e6%b6%89%e5%8f%8a%e6%96%87%e4%bb%b6">涉及文件</a></li>
+<li><a href="#%e7%bb%93%e6%9e%84%e4%bd%93">结构体</a></li>
+<li><a href="#api">API</a><ul>
+<li><a href="#robj-lookupkeyreadorreplyredisclient-c-robj-key-robj-reply">robj *lookupKeyReadOrReply(redisClient *c, robj *key, robj *reply)</a></li>
+<li><a href="#robj-lookupkeywriteorreplyredisclient-c-robj-key-robj-reply">robj *lookupKeyWriteOrReply(redisClient *c, robj *key, robj *reply)</a></li>
+<li><a href="#void-delcommandredisclient-c">void delCommand(redisClient *c)</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="涉及文件"><a href="#涉及文件" class="headerlink" title="涉及文件"></a>涉及文件</h2><p><code>redis.h</code></p>
+<p><code>db.c</code></p>
+<h2 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisDb</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 数据库键空间，保存着数据库中的所有键值对</span></span><br><span class="line">    dict *dict;                 <span class="comment">/* The keyspace for this DB */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 键的过期时间，字典的键为键，字典的值为过期事件 UNIX 时间戳</span></span><br><span class="line">    dict *expires;              <span class="comment">/* Timeout of keys with a timeout set */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正处于阻塞状态的键</span></span><br><span class="line">    dict *blocking_keys;        <span class="comment">/* Keys with clients waiting for data (BLPOP) */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 可以解除阻塞的键</span></span><br><span class="line">    dict *ready_keys;           <span class="comment">/* Blocked keys that received a PUSH */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正在被 WATCH 命令监视的键</span></span><br><span class="line">    dict *watched_keys;         <span class="comment">/* WATCHED keys for MULTI/EXEC CAS */</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">evictionPoolEntry</span> *<span class="title">eviction_pool</span>;</span>    <span class="comment">/* Eviction pool of keys */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 数据库号码</span></span><br><span class="line">    <span class="keyword">int</span> id;                     <span class="comment">/* Database ID */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 数据库的键的平均 TTL ，统计信息</span></span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">long</span> avg_ttl;          <span class="comment">/* Average TTL, just for stats */</span></span><br><span class="line"></span><br><span class="line">&#125; redisDb;</span><br></pre></td></tr></table></figure>
+
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><ul>
+<li><p>robj *lookupKeyReadOrReply(redisClient *c, robj *key, robj *reply)</p>
+</li>
+<li><p>robj *lookupKeyWriteOrReply(redisClient *c, robj *key, robj *reply)</p>
+</li>
+<li><p>void setKey(redisDb *db, robj *key, robj *val)</p>
+</li>
+<li><p>void setExpire(redisDb *db, robj *key, long long when)</p>
+</li>
+<li><p>void xxxCommand(redisClient* c);</p>
+</li>
+</ul>
+<h3 id="robj-lookupKeyReadOrReply-redisClient-c-robj-key-robj-reply"><a href="#robj-lookupKeyReadOrReply-redisClient-c-robj-key-robj-reply" class="headerlink" title="robj *lookupKeyReadOrReply(redisClient *c, robj *key, robj *reply)"></a>robj *lookupKeyReadOrReply(redisClient *c, robj *key, robj *reply)</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 为执行读取操作而从数据库中查找返回 key 的值。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 如果 key 存在，那么返回 key 的值对象。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 如果 key 不存在，那么向客户端发送 reply 参数中的信息，并返回 NULL 。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">robj *<span class="title">lookupKeyReadOrReply</span><span class="params">(redisClient *c, robj *key, robj *reply)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找</span></span><br><span class="line">    robj *o = lookupKeyRead(c-&gt;db, key);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 决定是否发送信息</span></span><br><span class="line">    <span class="keyword">if</span> (!o) &#125;&#123;</span><br><span class="line">        addReply(c, reply);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>addReply 在 “../3_数据类型实现/2_t_xxx.md” 看过了，这里重点看 lookupKeyRead：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 为执行读取操作而取出键 key 在数据库 db 中的值。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 并根据是否成功找到值，更新服务器的命中/不命中信息。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 找到时返回值对象，没找到返回 NULL 。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">robj *<span class="title">lookupKeyRead</span><span class="params">(redisDb *db, robj *key)</span> </span>&#123;</span><br><span class="line">    robj *val;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查 key 释放已经过期</span></span><br><span class="line">    expireIfNeeded(db, key);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 从数据库中取出键的值</span></span><br><span class="line">    val = lookupKey(db, key);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 更新命中/不命中信息</span></span><br><span class="line">    <span class="keyword">if</span> (val == <span class="literal">NULL</span>)</span><br><span class="line">        server.stat_keyspace_misses++;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        server.stat_keyspace_hits++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回值</span></span><br><span class="line">    <span class="keyword">return</span> val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>expireIfNeeded 也看过了， lookupKey 也挺简单的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 从数据库 db 中取出键 key 的值（对象）</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 如果 key 的值存在，那么返回该值；否则，返回 NULL 。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">robj *<span class="title">lookupKey</span><span class="params">(redisDb *db, robj *key)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找键空间</span></span><br><span class="line">    dictEntry *de = dictFind(db-&gt;dict, key-&gt;ptr);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 节点存在</span></span><br><span class="line">    <span class="keyword">if</span> (de) &#123;</span><br><span class="line">        <span class="comment">// 取出值</span></span><br><span class="line">        robj *val = dictGetVal(de);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Update the access time for the ageing algorithm.</span></span><br><span class="line"><span class="comment">         * Don't do it if we have a saving child, as this will trigger</span></span><br><span class="line"><span class="comment">         * a copy on write madness. */</span></span><br><span class="line">        <span class="comment">// 更新时间信息（只在不存在子进程时执行，防止破坏 copy-on-write 机制）</span></span><br><span class="line">        <span class="keyword">if</span> (server.rdb_child_pid == <span class="number">-1</span> &amp;&amp; server.aof_child_pid == <span class="number">-1</span>)</span><br><span class="line">            val-&gt;lru = LRU_CLOCK();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 返回值</span></span><br><span class="line">        <span class="keyword">return</span> val;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 节点不存在</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="robj-lookupKeyWriteOrReply-redisClient-c-robj-key-robj-reply"><a href="#robj-lookupKeyWriteOrReply-redisClient-c-robj-key-robj-reply" class="headerlink" title="robj *lookupKeyWriteOrReply(redisClient *c, robj *key, robj *reply)"></a>robj *lookupKeyWriteOrReply(redisClient *c, robj *key, robj *reply)</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 为执行写入操作而从数据库中查找返回 key 的值。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 如果 key 存在，那么返回 key 的值对象。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 如果 key 不存在，那么向客户端发送 reply 参数中的信息，并返回 NULL 。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="function">robj *<span class="title">lookupKeyWriteOrReply</span><span class="params">(redisClient *c, robj *key, robj *reply)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    robj *o = lookupKeyWrite(c-&gt;db, key);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!o) &#123;</span><br><span class="line">        addReply(c, reply);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 为执行写入操作而取出键 key 在数据库 db 中的值。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 和 lookupKeyRead 不同，这个函数不会更新服务器的命中/不命中信息。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 找到时返回值对象，没找到返回 NULL 。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">robj *<span class="title">lookupKeyWrite</span><span class="params">(redisDb *db, robj *key)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除过期键</span></span><br><span class="line">    expireIfNeeded(db, key);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找并返回 key 的值对象</span></span><br><span class="line">    <span class="keyword">return</span> lookupKey(db, key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和 lookupKeyReadOrReply 基本上是一样的，唯一的不同是 read 的情况下要更新 命中/不命中 信息</p>
+<h3 id="void-delCommand-redisClient-c"><a href="#void-delCommand-redisClient-c" class="headerlink" title="void delCommand(redisClient *c)"></a>void delCommand(redisClient *c)</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">delCommand</span><span class="params">(redisClient *c)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> deleted = <span class="number">0</span>, j;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历所有输入键</span></span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">1</span>; j &lt; c-&gt;argc; j++) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 先删除过期的键</span></span><br><span class="line">        expireIfNeeded(c-&gt;db, c-&gt;argv[j]);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 尝试删除键</span></span><br><span class="line">        <span class="keyword">if</span> (dbDelete(c-&gt;db, c-&gt;argv[j])) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 删除键成功，发送通知</span></span><br><span class="line">            signalModifiedKey(c-&gt;db, c-&gt;argv[j]);</span><br><span class="line">            notifyKeyspaceEvent(REDIS_NOTIFY_GENERIC,</span><br><span class="line">                                <span class="string">"del"</span>, c-&gt;argv[j], c-&gt;db-&gt;id);</span><br><span class="line"></span><br><span class="line">            server.dirty++;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 成功删除才增加 deleted 计数器的值</span></span><br><span class="line">            deleted++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回被删除键的数量</span></span><br><span class="line">    addReplyLongLong(c, deleted);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>首先看看 dbDelete 方法，逻辑是删除 expires 和 dict 的 key</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Delete a key, value, and associated expiration entry if any, from the DB </span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 从数据库中删除给定的键，键的值，以及键的过期时间。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 删除成功返回 1 ，因为键不存在而导致删除失败时，返回 0 。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dbDelete</span><span class="params">(redisDb *db, robj *key)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Deleting an entry from the expires dict will not free the sds of</span></span><br><span class="line"><span class="comment">     * the key, because it is shared with the main dictionary. */</span></span><br><span class="line">    <span class="comment">// 删除键的过期时间</span></span><br><span class="line">    <span class="keyword">if</span> (dictSize(db-&gt;expires) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        dictDelete(db-&gt;expires, key-&gt;ptr);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除键值对</span></span><br><span class="line">    <span class="keyword">if</span> (dictDelete(db-&gt;dict, key-&gt;ptr) == DICT_OK) &#123;</span><br><span class="line">        <span class="comment">// 如果开启了集群模式，那么从槽中删除给定的键</span></span><br><span class="line">        <span class="keyword">if</span> (server.cluster_enabled) &#123;</span><br><span class="line">            slotToKeyDel(key);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 键不存在</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后发送通知，一个通知事务 WATCH ，一个通知 pub-subscribe ，具体没细看</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">signalModifiedKey(c-&gt;db, c-&gt;argv[j]);</span><br><span class="line">notifyKeyspaceEvent(</span><br><span class="line">    REDIS_NOTIFY_GENERIC, <span class="string">"del"</span>, c-&gt;argv[j], c-&gt;db-&gt;id);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>最后把删除键的数目 addReply</p>
+</li>
+</ul>
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB7_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_db/" data-id="ck7naw84j000g2cveewl6dkk7" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB7_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_db/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB8_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_rdb/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          Redis 源码阅读8_数据库实现相关_rdb
+        
+      </div>
+    </a>
+  
+  
+    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB6_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B_%E9%94%AE%E7%B1%BB%E5%9E%8B/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Redis 源码阅读6_数据类型_键类型</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="开源组件/Redis/源码阅读/Redis源码阅读7_数据库实现相关_db/" data-title="Redis 源码阅读7_数据库实现相关_db" data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB7_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_db/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/">Redis</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/">muduo</a><span class="category-list-count">12</span></li></ul></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/" rel="tag">Cpp</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/" rel="tag">IO</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Net/" rel="tag">Net</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TCP/" rel="tag">TCP</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 12.5px;">Boost</a> <a href="/tags/C/" style="font-size: 17.5px;">C</a> <a href="/tags/CMake/" style="font-size: 10px;">CMake</a> <a href="/tags/Cpp/" style="font-size: 20px;">Cpp</a> <a href="/tags/IO/" style="font-size: 12.5px;">IO</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Net/" style="font-size: 15px;">Net</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 17.5px;">Redis</a> <a href="/tags/TCP/" style="font-size: 12.5px;">TCP</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a><span class="archive-list-count">23</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB11_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_redisServer/">Redis 源码阅读11_客户端和服务器_redisServer</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB10_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_networking/">Redis 源码阅读10_客户端和服务器_networking</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB9_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_ae/">Redis 源码阅读9_客户端和服务器_ae</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB8_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_rdb/">Redis 源码阅读8_数据库实现相关_rdb</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB7_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_db/">Redis 源码阅读7_数据库实现相关_db</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/midudu" target="_blank">GitHub</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Midudu<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"midudu"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+<script src="/js/script.js"></script>
+
+
+</div>
+</body>
+</html>

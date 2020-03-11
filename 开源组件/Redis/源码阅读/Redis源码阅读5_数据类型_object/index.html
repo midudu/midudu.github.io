@@ -1,0 +1,401 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Redis 源码阅读5_数据类型_object | Midudu&#39;s Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Redis 的对象（类型）系统实现。  涉及文件 结构体 API 通用 robj *createObject(int type, void *ptr);   STRING LIST 各种 free 方法 void freeStringObject(robj *o); void freeListObject(robj *o); void freeSetObject(robj *o); void fr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis 源码阅读5_数据类型_object">
+<meta property="og:url" content="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB5_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B_object/index.html">
+<meta property="og:site_name" content="Midudu&#39;s Home">
+<meta property="og:description" content="Redis 的对象（类型）系统实现。  涉及文件 结构体 API 通用 robj *createObject(int type, void *ptr);   STRING LIST 各种 free 方法 void freeStringObject(robj *o); void freeListObject(robj *o); void freeSetObject(robj *o); void fr">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-11T12:18:28.175Z">
+<meta property="article:modified_time" content="2020-03-11T12:19:29.000Z">
+<meta property="article:author" content="Midudu">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Midudu&#39;s Home" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Midudu&#39;s Home</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="yoursite.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-Redis源码阅读5_数据类型_object" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB5_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B_object/" class="article-date">
+  <time datetime="2020-03-11T12:18:28.175Z" itemprop="datePublished">2020-03-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a>►<a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/">Redis</a>►<a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Redis 源码阅读5_数据类型_object
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Redis 的对象（类型）系统实现。</p>
+<ul>
+<li><a href="#%e6%b6%89%e5%8f%8a%e6%96%87%e4%bb%b6">涉及文件</a></li>
+<li><a href="#%e7%bb%93%e6%9e%84%e4%bd%93">结构体</a></li>
+<li><a href="#api">API</a><ul>
+<li><a href="#%e9%80%9a%e7%94%a8">通用</a><ul>
+<li><a href="#robj-createobjectint-type-void-ptr">robj *createObject(int type, void *ptr);</a></li>
+</ul>
+</li>
+<li><a href="#string">STRING</a></li>
+<li><a href="#list">LIST</a></li>
+<li><a href="#%e5%90%84%e7%a7%8d-free-%e6%96%b9%e6%b3%95">各种 free 方法</a><ul>
+<li><a href="#void-freestringobjectrobj-o">void freeStringObject(robj *o);</a></li>
+<li><a href="#void-freelistobjectrobj-o">void freeListObject(robj *o);</a></li>
+<li><a href="#void-freesetobjectrobj-o">void freeSetObject(robj *o);</a></li>
+<li><a href="#void-freezsetobjectrobj-o">void freeZsetObject(robj *o);</a></li>
+<li><a href="#void-freehashobjectrobj-o">void freeHashObject(robj *o);</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="涉及文件"><a href="#涉及文件" class="headerlink" title="涉及文件"></a>涉及文件</h2><p><code>object.c</code></p>
+<p><code>redis.h</code></p>
+<h2 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> REDIS_LRU_BITS 24</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">redisObject</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 类型</span></span><br><span class="line">    <span class="keyword">unsigned</span> type:<span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 编码</span></span><br><span class="line">    <span class="keyword">unsigned</span> encoding:<span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 对象最后一次被访问的时间</span></span><br><span class="line">    <span class="keyword">unsigned</span> lru:REDIS_LRU_BITS; <span class="comment">/* lru time (relative to server.lruclock) */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 引用计数</span></span><br><span class="line">    <span class="keyword">int</span> refcount;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 指向实际值的指针</span></span><br><span class="line">    <span class="keyword">void</span> *ptr;</span><br><span class="line"></span><br><span class="line">&#125; robj;</span><br></pre></td></tr></table></figure>
+
+<p>使用了 c 语言中的按位分配变量，节省空间</p>
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><h3 id="通用"><a href="#通用" class="headerlink" title="通用"></a>通用</h3><h4 id="robj-createObject-int-type-void-ptr"><a href="#robj-createObject-int-type-void-ptr" class="headerlink" title="robj *createObject(int type, void *ptr);"></a>robj *createObject(int type, void *ptr);</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 创建一个新 robj 对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">robj *<span class="title">createObject</span><span class="params">(<span class="keyword">int</span> type, <span class="keyword">void</span> *ptr)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    robj *o = zmalloc(<span class="keyword">sizeof</span>(*o));</span><br><span class="line"></span><br><span class="line">    o-&gt;type = type;</span><br><span class="line">    o-&gt;encoding = REDIS_ENCODING_RAW;</span><br><span class="line">    o-&gt;ptr = ptr;</span><br><span class="line">    o-&gt;refcount = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Set the LRU to the current lruclock (minutes resolution). */</span></span><br><span class="line">    o-&gt;lru = LRU_CLOCK();</span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="STRING"><a href="#STRING" class="headerlink" title="STRING"></a>STRING</h3><ul>
+<li>robj *createStringObject(char *ptr, size_t len)</li>
+<li>robj *createRawStringObject(char *ptr, size_t len)</li>
+<li>robj *createEmbeddedStringObject(char *ptr, size_t len)</li>
+<li>robj *createStringObjectFromLongLong(long long value)</li>
+<li>robj *createStringObjectFromLongDouble(long double value)</li>
+<li>robj *dupStringObject(robj *o)</li>
+</ul>
+<p>STRING 类型的底层结构一共有三种：</p>
+<ul>
+<li>REDIS_ENCODING_RAW: SDS</li>
+<li>REDIS_ENCODING_EMBSTR：SDS，但是经过了 embstr 编码</li>
+<li>REDIS_ENCODING_INT:整数值</li>
+</ul>
+<p>随便看一个</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个 REDIS_ENCODING_EMBSTR 编码的字符对象</span></span><br><span class="line"><span class="comment">// 这个字符串对象中的 sds 会和字符串对象的 redisObject 结构一起分配</span></span><br><span class="line"><span class="comment">// 因此这个字符也是不可修改的</span></span><br><span class="line"><span class="function">robj *<span class="title">createEmbeddedStringObject</span><span class="params">(<span class="keyword">char</span> *ptr, <span class="keyword">size_t</span> len)</span> </span>&#123;</span><br><span class="line">    robj *o = zmalloc(<span class="keyword">sizeof</span>(robj) + <span class="keyword">sizeof</span>(struct sdshdr) + len + <span class="number">1</span>);</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> *<span class="title">sh</span> = (<span class="title">void</span> *) (<span class="title">o</span> + 1);</span></span><br><span class="line"></span><br><span class="line">    o-&gt;type = REDIS_STRING;</span><br><span class="line">    o-&gt;encoding = REDIS_ENCODING_EMBSTR;</span><br><span class="line">    o-&gt;ptr = sh + <span class="number">1</span>;</span><br><span class="line">    o-&gt;refcount = <span class="number">1</span>;</span><br><span class="line">    o-&gt;lru = LRU_CLOCK();</span><br><span class="line"></span><br><span class="line">    sh-&gt;len = len;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span> = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (ptr) &#123;</span><br><span class="line">        <span class="built_in">memcpy</span>(sh-&gt;buf, ptr, len);</span><br><span class="line">        sh-&gt;buf[len] = <span class="string">'\0'</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">memset</span>(sh-&gt;buf, <span class="number">0</span>, len + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法把字符串对象和sds的内存分配到一起，然后把字符串拷贝到 sds 的 buf 中</p>
+<h3 id="LIST"><a href="#LIST" class="headerlink" title="LIST"></a>LIST</h3><ul>
+<li>robj *createListObject(void)</li>
+<li>robj *createZiplistObject(void)</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 创建一个 LINKEDLIST 编码的列表对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">robj *<span class="title">createListObject</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">list</span> *l = listCreate();</span><br><span class="line"></span><br><span class="line">    robj *o = createObject(REDIS_LIST, l);</span><br><span class="line"></span><br><span class="line">    listSetFreeMethod(l, decrRefCountVoid);</span><br><span class="line"></span><br><span class="line">    o-&gt;encoding = REDIS_ENCODING_LINKEDLIST;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * 作用于特定数据结构的释放函数包装</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">decrRefCountVoid</span><span class="params">(<span class="keyword">void</span> *o)</span> </span>&#123;</span><br><span class="line">    decrRefCount(o);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 为对象的引用计数减一</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 当对象的引用计数降为 0 时，释放对象。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">decrRefCount</span><span class="params">(robj *o)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (o-&gt;refcount &lt;= <span class="number">0</span>) redisPanic(<span class="string">"decrRefCount against refcount &lt;= 0"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放对象</span></span><br><span class="line">    <span class="keyword">if</span> (o-&gt;refcount == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (o-&gt;type) &#123;</span><br><span class="line">            <span class="keyword">case</span> REDIS_STRING:</span><br><span class="line">                freeStringObject(o);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> REDIS_LIST:</span><br><span class="line">                freeListObject(o);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> REDIS_SET:</span><br><span class="line">                freeSetObject(o);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> REDIS_ZSET:</span><br><span class="line">                freeZsetObject(o);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> REDIS_HASH:</span><br><span class="line">                freeHashObject(o);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                redisPanic(<span class="string">"Unknown object type"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        zfree(o);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 减少计数</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        o-&gt;refcount--;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>挺简单的，重点是把 释放对象 的函数设置好</p>
+<hr>
+<p>各种 Create 基本大同小异，大概都是先 new 一个底层结构，然后设置好 type 和 encoding。</p>
+<p>看看 SET 的字典实现</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 创建一个 SET 编码的集合对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">robj *<span class="title">createSetObject</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    dict *d = dictCreate(&amp;setDictType, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    robj *o = createObject(REDIS_SET, d);</span><br><span class="line"></span><br><span class="line">    o-&gt;encoding = REDIS_ENCODING_HT;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 创建一个新的字典</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * T = O(1)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">dict *<span class="title">dictCreate</span><span class="params">(dictType *type, <span class="keyword">void</span> *privDataPtr)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    dict *d = zmalloc(<span class="keyword">sizeof</span>(*d));</span><br><span class="line"></span><br><span class="line">    _dictInit(d, type, privDataPtr);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> dictType setDictType;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Sets type hash table */</span></span><br><span class="line">dictType setDictType = &#123;</span><br><span class="line">        dictEncObjHash,            <span class="comment">/* hash function */</span></span><br><span class="line">        <span class="literal">NULL</span>,                      <span class="comment">/* key dup */</span></span><br><span class="line">        <span class="literal">NULL</span>,                      <span class="comment">/* val dup */</span></span><br><span class="line">        dictEncObjKeyCompare,      <span class="comment">/* key compare */</span></span><br><span class="line">        dictRedisObjectDestructor, <span class="comment">/* key destructor */</span></span><br><span class="line">        <span class="literal">NULL</span>                       <span class="comment">/* val destructor */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="各种-free-方法"><a href="#各种-free-方法" class="headerlink" title="各种 free 方法"></a>各种 free 方法</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 为对象的引用计数减一</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 当对象的引用计数降为 0 时，释放对象。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">decrRefCount</span><span class="params">(robj *o)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (o-&gt;refcount &lt;= <span class="number">0</span>) redisPanic(<span class="string">"decrRefCount against refcount &lt;= 0"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放对象</span></span><br><span class="line">    <span class="keyword">if</span> (o-&gt;refcount == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (o-&gt;type) &#123;</span><br><span class="line">            <span class="keyword">case</span> REDIS_STRING:</span><br><span class="line">                freeStringObject(o);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> REDIS_LIST:</span><br><span class="line">                freeListObject(o);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> REDIS_SET:</span><br><span class="line">                freeSetObject(o);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> REDIS_ZSET:</span><br><span class="line">                freeZsetObject(o);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> REDIS_HASH:</span><br><span class="line">                freeHashObject(o);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                redisPanic(<span class="string">"Unknown object type"</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        zfree(o);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 减少计数</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        o-&gt;refcount--;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="void-freeStringObject-robj-o"><a href="#void-freeStringObject-robj-o" class="headerlink" title="void freeStringObject(robj *o);"></a>void freeStringObject(robj *o);</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 释放字符串对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeStringObject</span><span class="params">(robj *o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o-&gt;encoding == REDIS_ENCODING_RAW) &#123;</span><br><span class="line">        sdsfree(o-&gt;ptr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sdsfree</span><span class="params">(sds s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span>) <span class="keyword">return</span>;</span><br><span class="line">    zfree(s - <span class="keyword">sizeof</span>(struct sdshdr));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="void-freeListObject-robj-o"><a href="#void-freeListObject-robj-o" class="headerlink" title="void freeListObject(robj *o);"></a>void freeListObject(robj *o);</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 释放列表对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeListObject</span><span class="params">(robj *o)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (o-&gt;encoding) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> REDIS_ENCODING_LINKEDLIST:</span><br><span class="line">            listRelease((<span class="built_in">list</span> *) o-&gt;ptr);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> REDIS_ENCODING_ZIPLIST:</span><br><span class="line">            zfree(o-&gt;ptr);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            redisPanic(<span class="string">"Unknown list encoding type"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 释放整个链表，以及链表中所有节点</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * T = O(N)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">listRelease</span><span class="params">(<span class="built_in">list</span> *<span class="built_in">list</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> len;</span><br><span class="line">    listNode *current, *next;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 指向头指针</span></span><br><span class="line">    current = <span class="built_in">list</span>-&gt;head;</span><br><span class="line">    <span class="comment">// 遍历整个链表</span></span><br><span class="line">    len = <span class="built_in">list</span>-&gt;len;</span><br><span class="line">    <span class="keyword">while</span> (len--) &#123;</span><br><span class="line">        next = current-&gt;next;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 如果有设置值释放函数，那么调用它</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">list</span>-&gt;<span class="built_in">free</span>) &#123;</span><br><span class="line">            <span class="built_in">list</span>-&gt;<span class="built_in">free</span>(current-&gt;value);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 释放节点结构</span></span><br><span class="line">        zfree(current);</span><br><span class="line"></span><br><span class="line">        current = next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放链表结构</span></span><br><span class="line">    zfree(<span class="built_in">list</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="void-freeSetObject-robj-o"><a href="#void-freeSetObject-robj-o" class="headerlink" title="void freeSetObject(robj *o);"></a>void freeSetObject(robj *o);</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 释放集合对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeSetObject</span><span class="params">(robj *o)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (o-&gt;encoding) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> REDIS_ENCODING_HT:</span><br><span class="line">            dictRelease((dict *) o-&gt;ptr);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> REDIS_ENCODING_INTSET:</span><br><span class="line">            zfree(o-&gt;ptr);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            redisPanic(<span class="string">"Unknown set encoding type"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 删除并释放整个字典</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * T = O(N)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dictRelease</span><span class="params">(dict *d)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 删除并清空两个哈希表</span></span><br><span class="line">    _dictClear(d, &amp;d-&gt;ht[<span class="number">0</span>], <span class="literal">NULL</span>);</span><br><span class="line">    _dictClear(d, &amp;d-&gt;ht[<span class="number">1</span>], <span class="literal">NULL</span>);</span><br><span class="line">    <span class="comment">// 释放节点结构</span></span><br><span class="line">    zfree(d);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> _dictClear(dict *d, dictht *ht, <span class="keyword">void</span>(callback)(<span class="keyword">void</span> *)) &#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> i;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Free all the elements */</span></span><br><span class="line">    <span class="comment">// 遍历整个哈希表</span></span><br><span class="line">    <span class="comment">// T = O(N)</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; ht-&gt;<span class="built_in">size</span> &amp;&amp; ht-&gt;used &gt; <span class="number">0</span>; i++) &#123;</span><br><span class="line">        dictEntry *he, *nextHe;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (callback &amp;&amp; (i &amp; <span class="number">65535</span>) == <span class="number">0</span>) callback(d-&gt;privdata);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 跳过空索引</span></span><br><span class="line">        <span class="keyword">if</span> ((he = ht-&gt;table[i]) == <span class="literal">NULL</span>) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 遍历整个链表</span></span><br><span class="line">        <span class="comment">// T = O(1)</span></span><br><span class="line">        <span class="keyword">while</span> (he) &#123;</span><br><span class="line">            nextHe = he-&gt;next;</span><br><span class="line">            <span class="comment">// 删除键</span></span><br><span class="line">            dictFreeKey(d, he);</span><br><span class="line">            <span class="comment">// 删除值</span></span><br><span class="line">            dictFreeVal(d, he);</span><br><span class="line">            <span class="comment">// 释放节点</span></span><br><span class="line">            zfree(he);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 更新已使用节点计数</span></span><br><span class="line">            ht-&gt;used--;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 处理下个节点</span></span><br><span class="line">            he = nextHe;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Free the table and the allocated cache structure */</span></span><br><span class="line">    <span class="comment">// 释放哈希表结构</span></span><br><span class="line">    zfree(ht-&gt;table);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Re-initialize the table */</span></span><br><span class="line">    <span class="comment">// 重置哈希表属性</span></span><br><span class="line">    _dictReset(ht);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> DICT_OK; <span class="comment">/* never fails */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="void-freeZsetObject-robj-o"><a href="#void-freeZsetObject-robj-o" class="headerlink" title="void freeZsetObject(robj *o);"></a>void freeZsetObject(robj *o);</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 释放有序集合对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeZsetObject</span><span class="params">(robj *o)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    zset *zs;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (o-&gt;encoding) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> REDIS_ENCODING_SKIPLIST:</span><br><span class="line">            zs = o-&gt;ptr;</span><br><span class="line">            dictRelease(zs-&gt;dict);</span><br><span class="line">            zslFree(zs-&gt;zsl);</span><br><span class="line">            zfree(zs);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> REDIS_ENCODING_ZIPLIST:</span><br><span class="line">            zfree(o-&gt;ptr);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            redisPanic(<span class="string">"Unknown sorted set encoding"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 释放给定跳跃表，以及表中的所有节点</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * T = O(N)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zslFree</span><span class="params">(zskiplist *zsl)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    zskiplistNode *node = zsl-&gt;header-&gt;level[<span class="number">0</span>].forward, *next;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放表头</span></span><br><span class="line">    zfree(zsl-&gt;header);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放表中所有节点</span></span><br><span class="line">    <span class="comment">// T = O(N)</span></span><br><span class="line">    <span class="keyword">while</span> (node) &#123;</span><br><span class="line"></span><br><span class="line">        next = node-&gt;level[<span class="number">0</span>].forward;</span><br><span class="line"></span><br><span class="line">        zslFreeNode(node);</span><br><span class="line"></span><br><span class="line">        node = next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放跳跃表结构</span></span><br><span class="line">    zfree(zsl);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="void-freeHashObject-robj-o"><a href="#void-freeHashObject-robj-o" class="headerlink" title="void freeHashObject(robj *o);"></a>void freeHashObject(robj *o);</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 释放哈希对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">freeHashObject</span><span class="params">(robj *o)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (o-&gt;encoding) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> REDIS_ENCODING_HT:</span><br><span class="line">            dictRelease((dict *) o-&gt;ptr);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> REDIS_ENCODING_ZIPLIST:</span><br><span class="line">            zfree(o-&gt;ptr);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            redisPanic(<span class="string">"Unknown hash encoding type"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB5_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B_object/" data-id="ck7naw84g000a2cve8kya8zso" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB5_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B_object/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB6_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B_%E9%94%AE%E7%B1%BB%E5%9E%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          Redis 源码阅读6_数据类型_键类型
+        
+      </div>
+    </a>
+  
+  
+    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB4_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84_skiplist/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Redis 源码阅读4_数据结构_skiplist</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="开源组件/Redis/源码阅读/Redis源码阅读5_数据类型_object/" data-title="Redis 源码阅读5_数据类型_object" data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB5_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B_object/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/">Redis</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/">muduo</a><span class="category-list-count">12</span></li></ul></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/" rel="tag">Cpp</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/" rel="tag">IO</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Net/" rel="tag">Net</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TCP/" rel="tag">TCP</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 12.5px;">Boost</a> <a href="/tags/C/" style="font-size: 17.5px;">C</a> <a href="/tags/CMake/" style="font-size: 10px;">CMake</a> <a href="/tags/Cpp/" style="font-size: 20px;">Cpp</a> <a href="/tags/IO/" style="font-size: 12.5px;">IO</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Net/" style="font-size: 15px;">Net</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 17.5px;">Redis</a> <a href="/tags/TCP/" style="font-size: 12.5px;">TCP</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a><span class="archive-list-count">23</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB11_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_redisServer/">Redis 源码阅读11_客户端和服务器_redisServer</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB10_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_networking/">Redis 源码阅读10_客户端和服务器_networking</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB9_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_ae/">Redis 源码阅读9_客户端和服务器_ae</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB8_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_rdb/">Redis 源码阅读8_数据库实现相关_rdb</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB7_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_db/">Redis 源码阅读7_数据库实现相关_db</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/midudu" target="_blank">GitHub</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Midudu<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"midudu"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+<script src="/js/script.js"></script>
+
+
+</div>
+</body>
+</html>
