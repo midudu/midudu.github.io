@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用 Hexo + GitHub 搭建个人免费博客教程 | Midudu&#39;s Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="参考链接  https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;60578464 https:&#x2F;&#x2F;cloud.tencent.com&#x2F;developer&#x2F;article&#x2F;1100307   一、简介 1. Hexo + GitHub 文章发布原理 2. GitHub Pages 是什么？ 3. Hexo 是什么？   二、步骤 1. 安装 Node.js 2. 安装 Hexo 3. Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Hexo + GitHub 搭建个人免费博客教程">
+<meta property="og:url" content="http://yoursite.com/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/index.html">
+<meta property="og:site_name" content="Midudu&#39;s Home">
+<meta property="og:description" content="参考链接  https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;60578464 https:&#x2F;&#x2F;cloud.tencent.com&#x2F;developer&#x2F;article&#x2F;1100307   一、简介 1. Hexo + GitHub 文章发布原理 2. GitHub Pages 是什么？ 3. Hexo 是什么？   二、步骤 1. 安装 Node.js 2. 安装 Hexo 3. Git">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/resources/v2-a193a47cf70fe6ecf156e5f3d34920ea_1440w.jpg">
+<meta property="article:published_time" content="2021-05-11T01:13:29.489Z">
+<meta property="article:modified_time" content="2020-03-11T01:15:57.000Z">
+<meta property="article:author" content="Midudu">
+<meta property="article:tag" content="教程">
+<meta property="article:tag" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/resources/v2-a193a47cf70fe6ecf156e5f3d34920ea_1440w.jpg">
+  
+    <link rel="alternative" href="/atom.xml" title="Midudu&#39;s Home" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Midudu&#39;s Home</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="yoursite.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-使用Hexo+GitHub搭建个人免费博客" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/" class="article-date">
+  <time datetime="2021-05-11T01:13:29.489Z" itemprop="datePublished">2021-05-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a>►<a class="article-category-link" href="/categories/%E6%95%99%E7%A8%8B/Hexo/">Hexo</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用 Hexo + GitHub 搭建个人免费博客教程
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>参考链接 </p>
+<p><a href="https://zhuanlan.zhihu.com/p/60578464" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/60578464</a></p>
+<p><a href="https://cloud.tencent.com/developer/article/1100307" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1100307</a></p>
+</blockquote>
+<ul>
+<li><a href="#一简介">一、简介</a><ul>
+<li><a href="#1-hexo--github-文章发布原理">1. Hexo + GitHub 文章发布原理</a></li>
+<li><a href="#2-github-pages-是什么">2. GitHub Pages 是什么？</a></li>
+<li><a href="#3-hexo-是什么">3. Hexo 是什么？</a></li>
+</ul>
+</li>
+<li><a href="#二步骤">二、步骤</a><ul>
+<li><a href="#1-安装-nodejs">1. 安装 Node.js</a></li>
+<li><a href="#2-安装-hexo">2. 安装 Hexo</a></li>
+<li><a href="#3-github-配置">3. GitHub 配置</a></li>
+</ul>
+</li>
+<li><a href="#三常用命令">三、常用命令</a></li>
+</ul>
+<h2 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h2><h3 id="1-Hexo-GitHub-文章发布原理"><a href="#1-Hexo-GitHub-文章发布原理" class="headerlink" title="1. Hexo + GitHub 文章发布原理"></a>1. Hexo + GitHub 文章发布原理</h3><p>在本地撰写 Markdown 格式文章后，通过 Hexo 解析文档，渲染生成具有主题样式的 HTML 静态网页，再推送到 GitHub 上完成博文的发布。</p>
+<p><img src="/resources/v2-a193a47cf70fe6ecf156e5f3d34920ea_1440w.jpg" alt="gewt"></p>
+<h3 id="2-GitHub-Pages-是什么？"><a href="#2-GitHub-Pages-是什么？" class="headerlink" title="2. GitHub Pages 是什么？"></a>2. GitHub Pages 是什么？</h3><p>GitHub Pages 是由 GitHub 官方提供的一种免费的静态站点托管服务，让我们可以在 GitHub 仓库里托管和发布自己的静态网站页面。</p>
+<p><a href="https://help.github.com/en/github/working-with-github-pages/about-github-pages" target="_blank" rel="noopener">GitHub Pages</a></p>
+<h3 id="3-Hexo-是什么？"><a href="#3-Hexo-是什么？" class="headerlink" title="3. Hexo 是什么？"></a>3. Hexo 是什么？</h3><p>Hexo 是一个快速、简洁且高效的静态博客框架，它基于 Node.js 运行，可以将我们撰写的 Markdown 文档解析渲染成静态的 HTML 网页。</p>
+<p><a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">Hexo</a></p>
+<h2 id="二、步骤"><a href="#二、步骤" class="headerlink" title="二、步骤"></a>二、步骤</h2><h3 id="1-安装-Node-js"><a href="#1-安装-Node-js" class="headerlink" title="1. 安装 Node.js"></a>1. 安装 Node.js</h3><p>直接下二进制文件，一路 next</p>
+<p><a href="http://nodejs.cn/download/" target="_blank" rel="noopener">Node.js</a></p>
+<h3 id="2-安装-Hexo"><a href="#2-安装-Hexo" class="headerlink" title="2. 安装 Hexo"></a>2. 安装 Hexo</h3><p>建一个文件夹用于保存 hexo 文件资源，然后依次执行以下命令，使用 npm 安装 hexo</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> E:</span><br><span class="line">mkdir Hexo</span><br><span class="line"><span class="built_in">cd</span> Hexo</span><br><span class="line">npm install -g hexo-cli</span><br><span class="line">hexo init</span><br><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>这样应该就安装好了，然后生成一下，再本地运行一下 server</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g   // generate 生成，md --&gt; html</span><br><span class="line">hexo s   // server， 本地运行</span><br></pre></td></tr></table></figure>
+
+<p>浏览器输入 localhost:4000 ，就能看到初始的 hello world 网页了。</p>
+<h3 id="3-GitHub-配置"><a href="#3-GitHub-配置" class="headerlink" title="3. GitHub 配置"></a>3. GitHub 配置</h3><ol>
+<li><p>本地的 ssh-key 绑定到 GitHub 上</p>
+</li>
+<li><p>新建一个 repository，名字必须是 ${user}.github.io</p>
+</li>
+<li><p>在 Hexo 文件夹下的 _config.yml 文件中修改配置</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">    type: git</span><br><span class="line">    repository: git@github.com:$&#123;user&#125;&#x2F;$&#123;user&#125;.github.io.git</span><br><span class="line">    branch: master</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用 hexo 上传到远程</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo d    &#x2F;&#x2F; deploy</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>此时浏览器键入 ${user}.github.io 就看到效果了</p>
+</li>
+</ol>
+<h2 id="三、常用命令"><a href="#三、常用命令" class="headerlink" title="三、常用命令"></a>三、常用命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">hexo new &quot;name&quot;       # 新建文章</span><br><span class="line">hexo new page &quot;name&quot;  # 新建页面</span><br><span class="line">hexo g                # 生成页面</span><br><span class="line">hexo d                # 部署</span><br><span class="line">hexo g -d             # 生成页面并部署</span><br><span class="line">hexo s                # 本地预览</span><br><span class="line">hexo clean            # 清除缓存和已生成的静态文件</span><br><span class="line">hexo help             # 帮助</span><br></pre></td></tr></table></figure>
+
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://yoursite.com/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/" data-id="ckojcgn3o001afcve66s87o0c" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="http://yoursite.com/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%99%E7%A8%8B/" rel="tag">教程</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB11_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_redisServer/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Redis 源码阅读11_客户端和服务器_redisServer</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="教程/Hexo/使用Hexo+GitHub搭建个人免费博客/" data-title="使用 Hexo + GitHub 搭建个人免费博客教程" data-url="http://yoursite.com/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/">Redis</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/">muduo</a><span class="category-list-count">12</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/" rel="tag">Cpp</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/" rel="tag">IO</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Net/" rel="tag">Net</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TCP/" rel="tag">TCP</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%99%E7%A8%8B/" rel="tag">教程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Boost/" style="font-size: 12.5px;">Boost</a> <a href="/tags/C/" style="font-size: 17.5px;">C</a> <a href="/tags/CMake/" style="font-size: 10px;">CMake</a> <a href="/tags/Cpp/" style="font-size: 20px;">Cpp</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/IO/" style="font-size: 12.5px;">IO</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Net/" style="font-size: 15px;">Net</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 17.5px;">Redis</a> <a href="/tags/TCP/" style="font-size: 12.5px;">TCP</a> <a href="/tags/%E6%95%99%E7%A8%8B/" style="font-size: 10px;">教程</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a><span class="archive-list-count">23</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/">使用 Hexo + GitHub 搭建个人免费博客教程</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB11_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_redisServer/">Redis 源码阅读11_客户端和服务器_redisServer</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB10_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_networking/">Redis 源码阅读10_客户端和服务器_networking</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB9_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_ae/">Redis 源码阅读9_客户端和服务器_ae</a>
+          </li>
+        
+          <li>
+            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB8_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_rdb/">Redis 源码阅读8_数据库实现相关_rdb</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/midudu" target="_blank">GitHub</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Midudu<br>
+      Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"midudu"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+<script src="/js/script.js"></script>
+
+
+</div>
+</body>
+</html>

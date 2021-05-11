@@ -70,6 +70,106 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-使用Hexo+GitHub搭建个人免费博客" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/" class="article-date">
+  <time datetime="2021-05-11T01:13:29.489Z" itemprop="datePublished">2021-05-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a>►<a class="article-category-link" href="/categories/%E6%95%99%E7%A8%8B/Hexo/">Hexo</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/">使用 Hexo + GitHub 搭建个人免费博客教程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>参考链接 </p>
+<p><a href="https://zhuanlan.zhihu.com/p/60578464" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/60578464</a></p>
+<p><a href="https://cloud.tencent.com/developer/article/1100307" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1100307</a></p>
+</blockquote>
+<ul>
+<li><a href="#一简介">一、简介</a><ul>
+<li><a href="#1-hexo--github-文章发布原理">1. Hexo + GitHub 文章发布原理</a></li>
+<li><a href="#2-github-pages-是什么">2. GitHub Pages 是什么？</a></li>
+<li><a href="#3-hexo-是什么">3. Hexo 是什么？</a></li>
+</ul>
+</li>
+<li><a href="#二步骤">二、步骤</a><ul>
+<li><a href="#1-安装-nodejs">1. 安装 Node.js</a></li>
+<li><a href="#2-安装-hexo">2. 安装 Hexo</a></li>
+<li><a href="#3-github-配置">3. GitHub 配置</a></li>
+</ul>
+</li>
+<li><a href="#三常用命令">三、常用命令</a></li>
+</ul>
+<h2 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h2><h3 id="1-Hexo-GitHub-文章发布原理"><a href="#1-Hexo-GitHub-文章发布原理" class="headerlink" title="1. Hexo + GitHub 文章发布原理"></a>1. Hexo + GitHub 文章发布原理</h3><p>在本地撰写 Markdown 格式文章后，通过 Hexo 解析文档，渲染生成具有主题样式的 HTML 静态网页，再推送到 GitHub 上完成博文的发布。</p>
+<p><img src="/resources/v2-a193a47cf70fe6ecf156e5f3d34920ea_1440w.jpg" alt="gewt"></p>
+<h3 id="2-GitHub-Pages-是什么？"><a href="#2-GitHub-Pages-是什么？" class="headerlink" title="2. GitHub Pages 是什么？"></a>2. GitHub Pages 是什么？</h3><p>GitHub Pages 是由 GitHub 官方提供的一种免费的静态站点托管服务，让我们可以在 GitHub 仓库里托管和发布自己的静态网站页面。</p>
+<p><a href="https://help.github.com/en/github/working-with-github-pages/about-github-pages" target="_blank" rel="noopener">GitHub Pages</a></p>
+<h3 id="3-Hexo-是什么？"><a href="#3-Hexo-是什么？" class="headerlink" title="3. Hexo 是什么？"></a>3. Hexo 是什么？</h3><p>Hexo 是一个快速、简洁且高效的静态博客框架，它基于 Node.js 运行，可以将我们撰写的 Markdown 文档解析渲染成静态的 HTML 网页。</p>
+<p><a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">Hexo</a></p>
+<h2 id="二、步骤"><a href="#二、步骤" class="headerlink" title="二、步骤"></a>二、步骤</h2><h3 id="1-安装-Node-js"><a href="#1-安装-Node-js" class="headerlink" title="1. 安装 Node.js"></a>1. 安装 Node.js</h3><p>直接下二进制文件，一路 next</p>
+<p><a href="http://nodejs.cn/download/" target="_blank" rel="noopener">Node.js</a></p>
+<h3 id="2-安装-Hexo"><a href="#2-安装-Hexo" class="headerlink" title="2. 安装 Hexo"></a>2. 安装 Hexo</h3><p>建一个文件夹用于保存 hexo 文件资源，然后依次执行以下命令，使用 npm 安装 hexo</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> E:</span><br><span class="line">mkdir Hexo</span><br><span class="line"><span class="built_in">cd</span> Hexo</span><br><span class="line">npm install -g hexo-cli</span><br><span class="line">hexo init</span><br><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>这样应该就安装好了，然后生成一下，再本地运行一下 server</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g   // generate 生成，md --&gt; html</span><br><span class="line">hexo s   // server， 本地运行</span><br></pre></td></tr></table></figure>
+
+<p>浏览器输入 localhost:4000 ，就能看到初始的 hello world 网页了。</p>
+<h3 id="3-GitHub-配置"><a href="#3-GitHub-配置" class="headerlink" title="3. GitHub 配置"></a>3. GitHub 配置</h3><ol>
+<li><p>本地的 ssh-key 绑定到 GitHub 上</p>
+</li>
+<li><p>新建一个 repository，名字必须是 ${user}.github.io</p>
+</li>
+<li><p>在 Hexo 文件夹下的 _config.yml 文件中修改配置</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">    type: git</span><br><span class="line">    repository: git@github.com:$&#123;user&#125;&#x2F;$&#123;user&#125;.github.io.git</span><br><span class="line">    branch: master</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用 hexo 上传到远程</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo d    &#x2F;&#x2F; deploy</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>此时浏览器键入 ${user}.github.io 就看到效果了</p>
+</li>
+</ol>
+<h2 id="三、常用命令"><a href="#三、常用命令" class="headerlink" title="三、常用命令"></a>三、常用命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">hexo new &quot;name&quot;       # 新建文章</span><br><span class="line">hexo new page &quot;name&quot;  # 新建页面</span><br><span class="line">hexo g                # 生成页面</span><br><span class="line">hexo d                # 部署</span><br><span class="line">hexo g -d             # 生成页面并部署</span><br><span class="line">hexo s                # 本地预览</span><br><span class="line">hexo clean            # 清除缓存和已生成的静态文件</span><br><span class="line">hexo help             # 帮助</span><br></pre></td></tr></table></figure>
+
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://yoursite.com/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/" data-id="ckojcgn3o001afcve66s87o0c" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="http://yoursite.com/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%99%E7%A8%8B/" rel="tag">教程</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Redis源码阅读11_客户端和服务器_redisServer" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB11_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_redisServer/" class="article-date">
@@ -327,7 +427,7 @@ initServerConfig 实在太长，还是直接看源码吧。
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB11_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_redisServer/" data-id="ck7naw863005g2cve1wqz0vss" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB11_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_redisServer/" data-id="ckojcgn4t0055fcveg9nigpge" class="article-share-link">分享到</a>
       
 
       
@@ -471,7 +571,7 @@ return;</code></pre><p>  }</p>
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB10_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_networking/" data-id="ck7naw83z00002cvechipf0op" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB10_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_networking/" data-id="ckojcgn290000fcvec6yia9g1" class="article-share-link">分享到</a>
       
 
       
@@ -651,7 +751,7 @@ return;</code></pre><p>  }</p>
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB9_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_ae/" data-id="ck7naw84k000k2cvealwmhvp7" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB9_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_ae/" data-id="ckojcgn38000efcve23nt2d8r" class="article-share-link">分享到</a>
       
 
       
@@ -842,7 +942,7 @@ return;</code></pre><p>  }</p>
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB8_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_rdb/" data-id="ck7naw84i000e2cve713k5zlf" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB8_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_rdb/" data-id="ckojcgn39000gfcvefxfz9sdz" class="article-share-link">分享到</a>
       
 
       
@@ -941,7 +1041,7 @@ return;</code></pre><p>  }</p>
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB7_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_db/" data-id="ck7naw84j000g2cveewl6dkk7" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB7_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_db/" data-id="ckojcgn3c000mfcve91wk8s5h" class="article-share-link">分享到</a>
       
 
       
@@ -1099,7 +1199,7 @@ return;</code></pre><p>  }</p>
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB6_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B_%E9%94%AE%E7%B1%BB%E5%9E%8B/" data-id="ck7naw84f00092cve4j0dcmic" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB6_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B_%E9%94%AE%E7%B1%BB%E5%9E%8B/" data-id="ckojcgn340009fcvebwxg4thn" class="article-share-link">分享到</a>
       
 
       
@@ -1219,7 +1319,7 @@ return;</code></pre><p>  }</p>
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB5_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B_object/" data-id="ck7naw84g000a2cve8kya8zso" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB5_%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B_object/" data-id="ckojcgn2z0006fcve6kw2758j" class="article-share-link">分享到</a>
       
 
       
@@ -1324,7 +1424,7 @@ return;</code></pre><p>  }</p>
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB4_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84_skiplist/" data-id="ck7naw84a00052cve47bj2xd1" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB4_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84_skiplist/" data-id="ckojcgn2x0005fcve719yc84t" class="article-share-link">分享到</a>
       
 
       
@@ -1492,113 +1592,11 @@ return;</code></pre><p>  }</p>
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84_dict/" data-id="ck7naw84900042cve0vrw0i5o" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84_dict/" data-id="ckojcgn3e000qfcve4s05ghw7" class="article-share-link">分享到</a>
       
 
       
         <a href="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB3_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84_dict/#ds-thread" class="article-comment-link">评论</a>
-      
-
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Redis源码阅读2_数据结构_adlist" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84_adlist/" class="article-date">
-  <time datetime="2020-03-11T12:13:18.328Z" itemprop="datePublished">2020-03-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a>►<a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/">Redis</a>►<a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84_adlist/">Redis 源码阅读2_数据结构_adlist</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>双端链表</p>
-<ul>
-<li><a href="#%e6%b6%89%e5%8f%8a%e6%96%87%e4%bb%b6">涉及文件</a></li>
-<li><a href="#%e7%bb%93%e6%9e%84%e4%bd%93">结构体</a></li>
-<li><a href="#api">API</a></li>
-<li><a href="#list-listcreatevoid">list *listCreate(void);</a></li>
-<li><a href="#void-listreleaselist-list">void listRelease(list *list);</a></li>
-<li><a href="#list-listinsertnodelist-list-listnode-oldnode-void-value-int-after">list *listInsertNode(list *list, listNode *old_node, void *value, int after);</a></li>
-</ul>
-<h2 id="涉及文件"><a href="#涉及文件" class="headerlink" title="涉及文件"></a>涉及文件</h2><p><code>adlist.h</code> 和 <code>adlist.c</code></p>
-<h2 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 双端链表节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 前置节点</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">prev</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 后置节点</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">next</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 节点的值</span></span><br><span class="line">    <span class="keyword">void</span> *value;</span><br><span class="line"></span><br><span class="line">&#125; listNode;</span><br></pre></td></tr></table></figure>
-
-<p>双链表结构</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 双端链表结构</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">list</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 表头节点</span></span><br><span class="line">    listNode *head;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 表尾节点</span></span><br><span class="line">    listNode *tail;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 节点值复制函数</span></span><br><span class="line">    <span class="keyword">void</span> *(*dup)(<span class="keyword">void</span> *ptr);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 节点值释放函数</span></span><br><span class="line">    <span class="keyword">void</span> (*<span class="built_in">free</span>)(<span class="keyword">void</span> *ptr);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 节点值对比函数</span></span><br><span class="line">    <span class="keyword">int</span> (*match)(<span class="keyword">void</span> *ptr, <span class="keyword">void</span> *key);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 链表所包含的节点数量</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> len;</span><br><span class="line"></span><br><span class="line">&#125; <span class="built_in">list</span>;</span><br></pre></td></tr></table></figure>
-
-<p>list 中包含三个函数指针 dup、free 和 match ，用于多态实现功能。</p>
-<blockquote>
-<p>注：</p>
-<p>函数指针的声明方法为：<br>返回值类型 ( * 指针变量名) ([形参列表]);</p>
-<p>int func(int x); /* 声明一个函数 */</p>
-<p>int (<em>f) (int x); /</em> 声明一个函数指针 */</p>
-<p>f=func; /* 将func函数的首地址赋给指针f */</p>
-<p>或者使用下面的方法将函数地址赋给函数指针：</p>
-<p>f = &func;</p>
-</blockquote>
-<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>首先是一大堆简单的宏定义：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Functions implemented as macros */</span></span><br><span class="line"><span class="comment">// 返回给定链表所包含的节点数量</span></span><br><span class="line"><span class="comment">// T = O(1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> listLength(l) ((l)-&gt;len)</span></span><br><span class="line"><span class="comment">// 返回给定链表的表头节点</span></span><br><span class="line"><span class="comment">// T = O(1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> listFirst(l) ((l)-&gt;head)</span></span><br><span class="line"><span class="comment">// 返回给定链表的表尾节点</span></span><br><span class="line"><span class="comment">// T = O(1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> listLast(l) ((l)-&gt;tail)</span></span><br><span class="line"><span class="comment">// 返回给定节点的前置节点</span></span><br><span class="line"><span class="comment">// T = O(1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> listPrevNode(n) ((n)-&gt;prev)</span></span><br><span class="line"><span class="comment">// 返回给定节点的后置节点</span></span><br><span class="line"><span class="comment">// T = O(1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> listNextNode(n) ((n)-&gt;next)</span></span><br><span class="line"><span class="comment">// 返回给定节点的值</span></span><br><span class="line"><span class="comment">// T = O(1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> listNodeValue(n) ((n)-&gt;value)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 将链表 l 的值复制函数设置为 m</span></span><br><span class="line"><span class="comment">// T = O(1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> listSetDupMethod(l, m) ((l)-&gt;dup = (m))</span></span><br><span class="line"><span class="comment">// 将链表 l 的值释放函数设置为 m</span></span><br><span class="line"><span class="comment">// T = O(1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> listSetFreeMethod(l, m) ((l)-&gt;free = (m))</span></span><br><span class="line"><span class="comment">// 将链表的对比函数设置为 m</span></span><br><span class="line"><span class="comment">// T = O(1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> listSetMatchMethod(l, m) ((l)-&gt;match = (m))</span></span><br></pre></td></tr></table></figure>
-
-<p>然后是真正的部分：</p>
-<p>list *listCreate(void);</p>
-<p>void listRelease(list *list);</p>
-<p>list *listAddNodeHead(list *list, void *value);</p>
-<p>list *listAddNodeTail(list *list, void *value);</p>
-<p>list *listInsertNode(list *list, listNode *old_node, void *value, int after);</p>
-<p>void listDelNode(list *list, listNode *node);</p>
-<p>listIter *listGetIterator(list *list, int direction);</p>
-<p>listNode *listNext(listIter *iter);</p>
-<p>void listReleaseIterator(listIter *iter);</p>
-<p>list *listDup(list *orig);</p>
-<p>listNode *listSearchKey(list *list, void *key);</p>
-<p>listNode *listIndex(list *list, long index);</p>
-<p>void listRewind(list *list, listIter *li);</p>
-<p>void listRewindTail(list *list, listIter *li);</p>
-<p>void listRotate(list *list);</p>
-<h2 id="list-listCreate-void"><a href="#list-listCreate-void" class="headerlink" title="list *listCreate(void);"></a>list *listCreate(void);</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 创建一个新的链表</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 创建成功返回链表，失败返回 NULL 。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * T = O(1)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="built_in">list</span> *<span class="title">listCreate</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">list</span> *<span class="title">list</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分配内存</span></span><br><span class="line">    <span class="keyword">if</span> ((<span class="built_in">list</span> = zmalloc(<span class="keyword">sizeof</span>(*<span class="built_in">list</span>))) == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化属性</span></span><br><span class="line">    <span class="built_in">list</span>-&gt;head = <span class="built_in">list</span>-&gt;tail = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="built_in">list</span>-&gt;len = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">list</span>-&gt;dup = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="built_in">list</span>-&gt;<span class="built_in">free</span> = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="built_in">list</span>-&gt;match = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">list</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>分配内存和各种初始化，不要被 <code>zmalloc(sizeof(*list)))</code> 骗了， list 是一个指针， <em>list 又变成了 list 本身，所以 `sizeof(</em>list)<code>和</code>sizeof(struct list)` 是一样的。</p>
-<h2 id="void-listRelease-list-list"><a href="#void-listRelease-list-list" class="headerlink" title="void listRelease(list *list);"></a>void listRelease(list *list);</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;*</span><br><span class="line"> * 释放整个链表，以及链表中所有节点</span><br><span class="line"> *</span><br><span class="line"> * T &#x3D; O(N)</span><br><span class="line"> *&#x2F;</span><br><span class="line">void listRelease(list *list) &#123;</span><br><span class="line">    unsigned long len;</span><br><span class="line">    listNode *current, *next;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 指向头指针</span><br><span class="line">    current &#x3D; list-&gt;head;</span><br><span class="line">    &#x2F;&#x2F; 遍历整个链表</span><br><span class="line">    len &#x3D; list-&gt;len;</span><br><span class="line">    while (len--) &#123;</span><br><span class="line">        next &#x3D; current-&gt;next;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 如果有设置值释放函数，那么调用它</span><br><span class="line">        if (list-&gt;free) &#123;</span><br><span class="line">            list-&gt;free(current-&gt;value);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 释放节点结构</span><br><span class="line">        zfree(current);</span><br><span class="line"></span><br><span class="line">        current &#x3D; next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 释放链表结构</span><br><span class="line">    zfree(list);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>先通过调用多态的 free 函数，释放链表中的结点；然后释放链表结构 <code>zfree(list)</code></p>
-<h2 id="list-listInsertNode-list-list-listNode-old-node-void-value-int-after"><a href="#list-listInsertNode-list-list-listNode-old-node-void-value-int-after" class="headerlink" title="list *listInsertNode(list *list, listNode *old_node, void *value, int after);"></a>list *listInsertNode(list *list, listNode *old_node, void *value, int after);</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 创建一个包含值 value 的新节点，并将它插入到 old_node 的之前或之后</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 如果 after 为 0 ，将新节点插入到 old_node 之前。</span></span><br><span class="line"><span class="comment"> * 如果 after 为 1 ，将新节点插入到 old_node 之后。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * T = O(1)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="built_in">list</span> *<span class="title">listInsertNode</span><span class="params">(<span class="built_in">list</span> *<span class="built_in">list</span>, listNode *old_node, <span class="keyword">void</span> *value, <span class="keyword">int</span> after)</span> </span>&#123;</span><br><span class="line">    listNode *node;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建新节点</span></span><br><span class="line">    <span class="keyword">if</span> ((node = zmalloc(<span class="keyword">sizeof</span>(*node))) == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 保存值</span></span><br><span class="line">    node-&gt;value = value;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将新节点添加到给定节点之后</span></span><br><span class="line">    <span class="keyword">if</span> (after) &#123;</span><br><span class="line">        node-&gt;prev = old_node;</span><br><span class="line">        node-&gt;next = old_node-&gt;next;</span><br><span class="line">        <span class="comment">// 给定节点是原表尾节点</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">list</span>-&gt;tail == old_node) &#123;</span><br><span class="line">            <span class="built_in">list</span>-&gt;tail = node;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 将新节点添加到给定节点之前</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        node-&gt;next = old_node;</span><br><span class="line">        node-&gt;prev = old_node-&gt;prev;</span><br><span class="line">        <span class="comment">// 给定节点是原表头节点</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">list</span>-&gt;head == old_node) &#123;</span><br><span class="line">            <span class="built_in">list</span>-&gt;head = node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 更新新节点的前置指针</span></span><br><span class="line">    <span class="keyword">if</span> (node-&gt;prev != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        node-&gt;prev-&gt;next = node;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 更新新节点的后置指针</span></span><br><span class="line">    <span class="keyword">if</span> (node-&gt;next != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        node-&gt;next-&gt;prev = node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 更新链表节点数</span></span><br><span class="line">    <span class="built_in">list</span>-&gt;len++;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">list</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>挺简单的，就是拆链，插入，重组链</p>
-<hr>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84_adlist/" data-id="ck7naw84b00062cve51jx7705" class="article-share-link">分享到</a>
-      
-
-      
-        <a href="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB2_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84_adlist/#ds-thread" class="article-comment-link">评论</a>
       
 
       
@@ -1624,7 +1622,7 @@ return;</code></pre><p>  }</p>
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/">Redis</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/">muduo</a><span class="category-list-count">12</span></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/">Redis</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/">muduo</a><span class="category-list-count">12</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li></ul>
     </div>
   </div>
 
@@ -1633,7 +1631,7 @@ return;</code></pre><p>  }</p>
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/" rel="tag">Cpp</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/" rel="tag">IO</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Net/" rel="tag">Net</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TCP/" rel="tag">TCP</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">4</span></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/" rel="tag">Cpp</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/" rel="tag">IO</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Net/" rel="tag">Net</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TCP/" rel="tag">TCP</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%99%E7%A8%8B/" rel="tag">教程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -1642,7 +1640,7 @@ return;</code></pre><p>  }</p>
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 12.5px;">Boost</a> <a href="/tags/C/" style="font-size: 17.5px;">C</a> <a href="/tags/CMake/" style="font-size: 10px;">CMake</a> <a href="/tags/Cpp/" style="font-size: 20px;">Cpp</a> <a href="/tags/IO/" style="font-size: 12.5px;">IO</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Net/" style="font-size: 15px;">Net</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 17.5px;">Redis</a> <a href="/tags/TCP/" style="font-size: 12.5px;">TCP</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a>
+      <a href="/tags/Boost/" style="font-size: 12.5px;">Boost</a> <a href="/tags/C/" style="font-size: 17.5px;">C</a> <a href="/tags/CMake/" style="font-size: 10px;">CMake</a> <a href="/tags/Cpp/" style="font-size: 20px;">Cpp</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/IO/" style="font-size: 12.5px;">IO</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Net/" style="font-size: 15px;">Net</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 17.5px;">Redis</a> <a href="/tags/TCP/" style="font-size: 12.5px;">TCP</a> <a href="/tags/%E6%95%99%E7%A8%8B/" style="font-size: 10px;">教程</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a>
     </div>
   </div>
 
@@ -1651,7 +1649,7 @@ return;</code></pre><p>  }</p>
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a><span class="archive-list-count">23</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a><span class="archive-list-count">23</span></li></ul>
     </div>
   </div>
 
@@ -1661,6 +1659,10 @@ return;</code></pre><p>  }</p>
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/">使用 Hexo + GitHub 搭建个人免费博客教程</a>
+          </li>
         
           <li>
             <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB11_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_redisServer/">Redis 源码阅读11_客户端和服务器_redisServer</a>
@@ -1676,10 +1678,6 @@ return;</code></pre><p>  }</p>
         
           <li>
             <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB8_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_rdb/">Redis 源码阅读8_数据库实现相关_rdb</a>
-          </li>
-        
-          <li>
-            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB7_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_db/">Redis 源码阅读7_数据库实现相关_db</a>
           </li>
         
       </ul>
@@ -1709,7 +1707,7 @@ return;</code></pre><p>  }</p>
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2020 Midudu<br>
+      &copy; 2021 Midudu<br>
       Powered by <a href="//hexo.io/" target="_blank">Hexo</a>
       .
       Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
