@@ -70,6 +70,85 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-muduo中的网络库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C%E5%BA%93/" class="article-date">
+  <time datetime="2020-03-09T02:52:15.035Z" itemprop="datePublished">2020-03-09</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a>►<a class="article-category-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/">muduo</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C%E5%BA%93/">muduo 中的网络库</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li><a href="#1-buffer">1. Buffer</a></li>
+</ul>
+<h3 id="1-Buffer"><a href="#1-Buffer" class="headerlink" title="1. Buffer"></a>1. Buffer</h3><ol start="0">
+<li>部分源码</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> muduo &#123;</span><br><span class="line">    <span class="keyword">namespace</span> net &#123;</span><br><span class="line">        <span class="class"><span class="keyword">class</span> <span class="title">Buffer</span> :</span> <span class="keyword">public</span> muduo::copyable &#123;</span><br><span class="line">        <span class="keyword">public</span>:</span><br><span class="line">            <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">size_t</span> kCheapPrepend = <span class="number">8</span>;</span><br><span class="line">            <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">size_t</span> kInitialSize = <span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">explicit</span> <span class="title">Buffer</span><span class="params">(<span class="keyword">size_t</span> initialSize = kInitialSize)</span></span></span><br><span class="line">                    : buffer_(kCheapPrepend + initialSize),</span><br><span class="line">                      readerIndex_(kCheapPrepend),</span><br><span class="line">                      writerIndex_(kCheapPrepend) &#123;</span><br><span class="line"></span><br><span class="line">                assert(readableBytes() == <span class="number">0</span>);</span><br><span class="line">                assert(writableBytes() == initialSize);</span><br><span class="line">                assert(prependableBytes() == kCheapPrepend);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// implicit copy-ctor, move-ctor, dtor and assignment are fine</span></span><br><span class="line">            <span class="comment">// <span class="doctag">NOTE:</span> implicit move-ctor is added in g++ 4.6</span></span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Buffer &amp;rhs)</span> </span>&#123;</span><br><span class="line">                buffer_.swap(rhs.buffer_);</span><br><span class="line">                <span class="built_in">std</span>::swap(readerIndex_, rhs.readerIndex_);</span><br><span class="line">                <span class="built_in">std</span>::swap(writerIndex_, rhs.writerIndex_);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            ...</span><br><span class="line"></span><br><span class="line">            <span class="comment">// retrieve returns void, to prevent</span></span><br><span class="line">            <span class="comment">// string str(retrieve(readableBytes()), readableBytes());</span></span><br><span class="line">            <span class="comment">// the evaluation of two functions are unspecified</span></span><br><span class="line">            <span class="function"><span class="keyword">void</span> <span class="title">retrieve</span><span class="params">(<span class="keyword">size_t</span> len)</span> </span>&#123;</span><br><span class="line">                assert(len &lt;= readableBytes());</span><br><span class="line">                <span class="keyword">if</span> (len &lt; readableBytes()) &#123;</span><br><span class="line">                    readerIndex_ += len;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    retrieveAll();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            ...</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">void</span> <span class="title">append</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * <span class="comment">/*restrict*/</span> data, <span class="keyword">size_t</span> len)</span> </span>&#123;</span><br><span class="line">                ensureWritableBytes(len);</span><br><span class="line">                <span class="built_in">std</span>::copy(data, data + len, beginWrite());</span><br><span class="line">                hasWritten(len);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">///</span></span><br><span class="line">            <span class="comment">/// Peek int64_t from network endian</span></span><br><span class="line">            <span class="comment">///</span></span><br><span class="line">            <span class="comment">/// Require: buf-&gt;readableBytes() &gt;= sizeof(int64_t)</span></span><br><span class="line">            <span class="function"><span class="keyword">int64_t</span> <span class="title">peekInt64</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">                assert(readableBytes() &gt;= <span class="keyword">sizeof</span>(<span class="keyword">int64_t</span>));</span><br><span class="line">                <span class="keyword">int64_t</span> be64 = <span class="number">0</span>;</span><br><span class="line">                ::<span class="built_in">memcpy</span>(&amp;be64, peek(), <span class="keyword">sizeof</span> be64);</span><br><span class="line">                <span class="keyword">return</span> sockets::networkToHost64(be64);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            ...</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">void</span> <span class="title">prepend</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> * <span class="comment">/*restrict*/</span> data, <span class="keyword">size_t</span> len)</span> </span>&#123;</span><br><span class="line">                assert(len &lt;= prependableBytes());</span><br><span class="line">                readerIndex_ -= len;</span><br><span class="line">                <span class="keyword">const</span> <span class="keyword">char</span> *d = <span class="keyword">static_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">char</span> *&gt;(data);</span><br><span class="line">                <span class="built_in">std</span>::copy(d, d + len, begin() + readerIndex_);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            ...</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">void</span> <span class="title">shrink</span><span class="params">(<span class="keyword">size_t</span> reserve)</span> </span>&#123;</span><br><span class="line">                <span class="comment">// <span class="doctag">FIXME:</span> use vector::shrink_to_fit() in C++ 11 if possible.</span></span><br><span class="line">                Buffer other;</span><br><span class="line">                other.ensureWritableBytes(readableBytes() + reserve);</span><br><span class="line">                other.append(toStringPiece());</span><br><span class="line">                swap(other);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/// Read data directly into buffer.</span></span><br><span class="line">            <span class="comment">///</span></span><br><span class="line">            <span class="comment">/// It may implement with readv(2)</span></span><br><span class="line">            <span class="comment">/// @return result of read(2), @c errno is saved</span></span><br><span class="line">            <span class="function"><span class="keyword">ssize_t</span> <span class="title">readFd</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> *savedErrno)</span></span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span>:</span><br><span class="line">            ...</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">void</span> <span class="title">makeSpace</span><span class="params">(<span class="keyword">size_t</span> len)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (writableBytes() + prependableBytes() &lt; len + kCheapPrepend) &#123;</span><br><span class="line">                    <span class="comment">// <span class="doctag">FIXME:</span> move readable data</span></span><br><span class="line">                    buffer_.resize(writerIndex_ + len);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">// move readable data to the front, make space inside buffer</span></span><br><span class="line">                    assert(kCheapPrepend &lt; readerIndex_);</span><br><span class="line">                    <span class="keyword">size_t</span> readable = readableBytes();</span><br><span class="line">                    <span class="built_in">std</span>::copy(begin() + readerIndex_,</span><br><span class="line">                              begin() + writerIndex_,</span><br><span class="line">                              begin() + kCheapPrepend);</span><br><span class="line">                    readerIndex_ = kCheapPrepend;</span><br><span class="line">                    writerIndex_ = readerIndex_ + readable;</span><br><span class="line">                    assert(readable == readableBytes());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span>:</span><br><span class="line">            <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; buffer_;</span><br><span class="line">            <span class="keyword">size_t</span> readerIndex_;</span><br><span class="line">            <span class="keyword">size_t</span> writerIndex_;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> kCRLF[];</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;  <span class="comment">// namespace net</span></span><br><span class="line">&#125;  <span class="comment">// namespace muduo</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>提供的 public 方法</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(Buffer &amp;rhs)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">retrieve</span><span class="params">(<span class="keyword">size_t</span> len)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">append</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * <span class="comment">/*restrict*/</span> data, <span class="keyword">size_t</span> len)</span></span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>底层是一个 <code>vector&lt;char&gt;</code> 类型的 buffer_；</p>
+<p> 具体原理见 “./5_Buffer类的设计.md”</p>
+</li>
+<li><p><code>ssize_t readFd(int fd, int *savedErrno)</code> 方法</p>
+</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">Buffer::readFd</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> *savedErrno)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// saved an ioctl()/FIONREAD call to tell how much to read</span></span><br><span class="line">    <span class="keyword">char</span> extrabuf[<span class="number">65536</span>];</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">iovec</span> <span class="title">vec</span>[2];</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">size_t</span> writable = writableBytes();</span><br><span class="line"></span><br><span class="line">    vec[<span class="number">0</span>].iov_base = begin() + writerIndex_;</span><br><span class="line">    vec[<span class="number">0</span>].iov_len = writable;</span><br><span class="line">    vec[<span class="number">1</span>].iov_base = extrabuf;</span><br><span class="line">    vec[<span class="number">1</span>].iov_len = <span class="keyword">sizeof</span> extrabuf;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// when there is enough space in this buffer, don't read into extrabuf.</span></span><br><span class="line">    <span class="comment">// when extrabuf is used, we read 128k-1 bytes at most.</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> iovcnt = (writable &lt; <span class="keyword">sizeof</span> extrabuf) ? <span class="number">2</span> : <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">ssize_t</span> n = sockets::readv(fd, vec, iovcnt);</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        *savedErrno = errno;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (implicit_cast&lt;<span class="keyword">size_t</span>&gt;(n) &lt;= writable) &#123;</span><br><span class="line">        writerIndex_ += n;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        writerIndex_ = buffer_.size();</span><br><span class="line">        append(extrabuf, n - writable);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法的原理是：</p>
+<ul>
+<li><p>走内核的系统调用较为耗时，为了提高效率，最好一次读完</p>
+</li>
+<li><p>最终希望达到的目标是，数据从内核缓冲区全部进入 <code>buffer</code> 中的缓冲区(底层是一个 <code>vector</code>)</p>
+</li>
+<li><p>第一点和第二点有所矛盾，因此这个方法在<strong>栈</strong>上先分配一个 <code>char extrabuf[65536];</code>：如果 buffer 中的空间大小足够，就直接从内核拷贝到 buffer 中；如果不够，那就先读到栈上的 65536 字节的缓冲区，然后再 append 到 buffer 中，而 append 的过程是 buffer 类本身要考虑的事情</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C%E5%BA%93/" data-id="ckokrfe78003ei0ve32eogph6" class="article-share-link">分享到</a>
+      
+
+      
+        <a href="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E4%B8%AD%E7%9A%84%E7%BD%91%E7%BB%9C%E5%BA%93/#ds-thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/" rel="tag">Cpp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IO/" rel="tag">IO</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Buffer类的设计" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/" class="article-date">
@@ -322,7 +401,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/" data-id="ckojcgn2o0001fcvegddichox" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/Buffer%E7%B1%BB%E7%9A%84%E8%AE%BE%E8%AE%A1/" data-id="ckokrfe3r0001i0veh3vj6688" class="article-share-link">分享到</a>
       
 
       
@@ -536,7 +615,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E4%B8%AD%E7%9A%84base%E7%BB%84%E4%BB%B6/" data-id="ckojcgn3g000sfcvegnqk9lkj" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E4%B8%AD%E7%9A%84base%E7%BB%84%E4%BB%B6/" data-id="ckokrfe75003ci0ve4jiqdioc" class="article-share-link">分享到</a>
       
 
       
@@ -618,7 +697,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84CMakeLists/" data-id="ckojcgn3j000yfcvehsjxglls" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/muduo%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84CMakeLists/" data-id="ckokrfe80003vi0ve98kr4os3" class="article-share-link">分享到</a>
       
 
       
@@ -758,7 +837,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8E%20Reactor%20%E6%A8%A1%E5%BC%8F%E7%9A%84%20C++%20%E7%BD%91%E7%BB%9C%E5%BA%93/" data-id="ckojcgn3u001ofcveg465gc96" class="article-share-link">分享到</a>
+        <a data-url="http://yoursite.com/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/%E5%8F%91%E5%B8%83%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8E%20Reactor%20%E6%A8%A1%E5%BC%8F%E7%9A%84%20C++%20%E7%BD%91%E7%BB%9C%E5%BA%93/" data-id="ckokrfe8d0045i0ve5ztogfnt" class="article-share-link">分享到</a>
       
 
       
@@ -788,7 +867,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/">Redis</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/">muduo</a><span class="category-list-count">12</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/ClassLoader/">ClassLoader</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/">开源组件</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/">Redis</a><span class="category-list-count">11</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">源码阅读</a><span class="category-list-count">11</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/muduo/">muduo</a><span class="category-list-count">12</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/Hexo/">Hexo</a><span class="category-list-count">1</span></li></ul></li></ul>
     </div>
   </div>
 
@@ -797,7 +876,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/" rel="tag">Cpp</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/" rel="tag">IO</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Net/" rel="tag">Net</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TCP/" rel="tag">TCP</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%99%E7%A8%8B/" rel="tag">教程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">4</span></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Boost/" rel="tag">Boost</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/" rel="tag">ClassLoader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/" rel="tag">Cpp</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IO/" rel="tag">IO</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Net/" rel="tag">Net</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TCP/" rel="tag">TCP</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%99%E7%A8%8B/" rel="tag">教程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%83%AD%E5%8A%A0%E8%BD%BD/" rel="tag">热加载</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -806,7 +885,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Boost/" style="font-size: 12.5px;">Boost</a> <a href="/tags/C/" style="font-size: 17.5px;">C</a> <a href="/tags/CMake/" style="font-size: 10px;">CMake</a> <a href="/tags/Cpp/" style="font-size: 20px;">Cpp</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/IO/" style="font-size: 12.5px;">IO</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Net/" style="font-size: 15px;">Net</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 17.5px;">Redis</a> <a href="/tags/TCP/" style="font-size: 12.5px;">TCP</a> <a href="/tags/%E6%95%99%E7%A8%8B/" style="font-size: 10px;">教程</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a>
+      <a href="/tags/Boost/" style="font-size: 12.5px;">Boost</a> <a href="/tags/C/" style="font-size: 17.5px;">C</a> <a href="/tags/CMake/" style="font-size: 10px;">CMake</a> <a href="/tags/ClassLoader/" style="font-size: 10px;">ClassLoader</a> <a href="/tags/Cpp/" style="font-size: 20px;">Cpp</a> <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/IO/" style="font-size: 12.5px;">IO</a> <a href="/tags/Java/" style="font-size: 10px;">Java</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Net/" style="font-size: 15px;">Net</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 17.5px;">Redis</a> <a href="/tags/TCP/" style="font-size: 12.5px;">TCP</a> <a href="/tags/%E6%95%99%E7%A8%8B/" style="font-size: 10px;">教程</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%83%AD%E5%8A%A0%E8%BD%BD/" style="font-size: 10px;">热加载</a>
     </div>
   </div>
 
@@ -815,7 +894,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a><span class="archive-list-count">23</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a><span class="archive-list-count">23</span></li></ul>
     </div>
   </div>
 
@@ -825,6 +904,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/Java/ClassLoader/Java%E7%83%AD%E5%8A%A0%E8%BD%BD%E5%8E%9F%E7%90%86%E5%92%8C%E4%BB%A3%E7%A0%81/">Java 热加载的原理和代码</a>
+          </li>
         
           <li>
             <a href="/%E6%95%99%E7%A8%8B/Hexo/%E4%BD%BF%E7%94%A8Hexo+GitHub%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%85%8D%E8%B4%B9%E5%8D%9A%E5%AE%A2/">使用 Hexo + GitHub 搭建个人免费博客教程</a>
@@ -840,10 +923,6 @@
         
           <li>
             <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB9_%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%99%A8_ae/">Redis 源码阅读9_客户端和服务器_ae</a>
-          </li>
-        
-          <li>
-            <a href="/%E5%BC%80%E6%BA%90%E7%BB%84%E4%BB%B6/Redis/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/Redis%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB8_%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E7%9B%B8%E5%85%B3_rdb/">Redis 源码阅读8_数据库实现相关_rdb</a>
           </li>
         
       </ul>
